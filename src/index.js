@@ -2,15 +2,14 @@ require('dotenv').config();
 const mongoose = require('mongoose');
 
 const app = require('./app');
-
-const { MONGO_CONNECTION_STRING, API_PORT } = process.env;
+const { envVars } = require('./helpers');
 
 mongoose
-  .connect(MONGO_CONNECTION_STRING)
+  .connect(envVars.MONGO_CONNECTION_STRING)
   .then(() => {
-    app.listen(API_PORT, () => {
+    app.listen(envVars.API_PORT, () => {
       console.log('Database connection successful');
-      console.log(`Server running. Use our API on port: ${API_PORT}`);
+      console.log(`Server running. Use our API on port: ${envVars.API_PORT}`);
     });
   })
   .catch(err => {

@@ -18,11 +18,7 @@
       "warn",
       {
         "newlines-between": "always",
-        "groups": [
-          "builtin",
-          "external",
-          ["internal", "parent", "sibling", "index", "type"]
-        ],
+        "groups": ["builtin", "external", ["internal", "parent", "sibling", "index", "type"]],
         "alphabetize": {
           "order": "asc"
         }
@@ -38,6 +34,7 @@
     "class-methods-use-this": "off",
     "consistent-return": "off",
     "global-require": "off",
-    "no-unused-vars": ["warn", { "argsIgnorePattern": "_" }]
+    "no-unused-vars": ["warn", { "argsIgnorePattern": "_" }],
+    "no-underscore-dangle": "off"
   }
 }
