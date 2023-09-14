@@ -47,7 +47,15 @@ const signIn = async (req, res) => {
   });
 };
 
+const current = async (req, res) => {
+  res.json({
+    email: req.user.email,
+    subscription: req.user.subscription,
+  });
+};
+
 module.exports = {
   signUp: handlerWrapper(signUp),
   signIn: handlerWrapper(signIn),
+  current: handlerWrapper(current),
 };
