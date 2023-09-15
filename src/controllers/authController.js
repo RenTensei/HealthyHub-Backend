@@ -3,27 +3,19 @@ const jwt = require('jsonwebtoken');
 
 const { handlerWrapper, HttpError, envVars } = require('../helpers');
 const UserModel = require('../models/User/UserModel');
-const { UserValidationSchema } = require('../models/User/UserSchemas');
+const { SignUpValidationSchema, SignInValidationSchema } = require('../models/User/UserSchemas');
 
 const signUp = async (req, res) => {
-  const { name, email, password, goal, gender, age, height, weight, physicalActivityRatio } =
-    UserValidationSchema.parse(req.body);
+  const validatedBody = SignUpValidationSchema.parse(req.body);
 
-  const existingUserEmail = await UserModel.findOne({ email });
+  const existingUserEmail = await UserModel.findOne({ email: validatedBody.email });
   if (existingUserEmail) throw new HttpError(409, 'Email already in use!');
 
-  const hashedPassword = await bcrypt.hash(password, 10);
+  const hashedPassword = await bcrypt.hash(validatedBody.password, 10);
 
   const newUser = await UserModel.create({
-    name,
-    email,
+    ...validatedBody,
     password: hashedPassword,
-    goal,
-    gender,
-    age,
-    height,
-    weight,
-    physicalActivityRatio,
   });
 
   res.status(201).json({
@@ -42,7 +34,7 @@ const signUp = async (req, res) => {
 };
 
 const signIn = async (req, res) => {
-  const validatedBody = UserValidationSchema.parse(req.body);
+  const validatedBody = SignInValidationSchema.parse(req.body);
 
   const existingUser = await UserModel.findOne({ email: validatedBody.email });
   if (!existingUser) throw new HttpError(401, 'Email or password is wrong!');
@@ -54,19 +46,36 @@ const signIn = async (req, res) => {
     expiresIn: '24h',
   });
   const updatedUser = await UserModel.findByIdAndUpdate(existingUser._id, { token }, { new: true });
+  console.log(updatedUser);
 
   res.json({
     token: updatedUser.token,
     user: {
+      name: updatedUser.name,
       email: updatedUser.email,
+      goal: updatedUser.goal,
+      gender: updatedUser.gender,
+      age: updatedUser.age,
+      height: updatedUser.height,
+      weight: updatedUser.weight,
+      physicalActivityRatio: updatedUser.physicalActivityRatio,
+      BMR: updatedUser.BMR,
     },
   });
 };
 
 const current = async (req, res) => {
+  const { name, email, goal, gender, age, height, weight, physicalActivityRatio, BMR } = req.user;
   res.json({
-    email: req.user.email,
-    subscription: req.user.subscription,
+    name,
+    email,
+    goal,
+    gender,
+    age,
+    height,
+    weight,
+    physicalActivityRatio,
+    BMR,
   });
 };
 

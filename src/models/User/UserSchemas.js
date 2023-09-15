@@ -1,6 +1,6 @@
 const { z } = require('zod');
 
-const UserValidationSchema = z.object({
+const SignUpValidationSchema = z.object({
   name: z.string().min(3),
   email: z.string().email(),
   password: z.string().min(5),
@@ -12,4 +12,9 @@ const UserValidationSchema = z.object({
   physicalActivityRatio: z.number().min(1.2).max(2.5),
 });
 
-module.exports = { UserValidationSchema };
+const SignInValidationSchema = z.object({
+  email: z.string().email(),
+  password: z.string().min(5),
+});
+
+module.exports = { SignUpValidationSchema, SignInValidationSchema };
