@@ -7,6 +7,7 @@ const { fromZodError } = require('zod-validation-error');
 
 const { HttpError } = require('./helpers');
 const authRoutes = require('./routes/auth');
+const userRoutes = require('./routes/user');
 
 const app = express();
 const formatsLogger = app.get('env') === 'development' ? 'dev' : 'short';
@@ -17,6 +18,7 @@ app.use(express.static('public'));
 
 // apply routes
 app.use('/api/auth', authRoutes);
+app.use('/api/user', userRoutes);
 
 // non-existing route
 app.use((_, res) => {

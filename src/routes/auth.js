@@ -11,6 +11,4 @@ router.post('/signin', authController.signIn);
 
 router.get('/current', authMiddleware, authController.current);
 
-router.patch('/info', authMiddleware, authController.updateUser);
-
 module.exports = router;

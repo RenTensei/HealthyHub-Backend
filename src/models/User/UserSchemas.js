@@ -3,7 +3,7 @@ const { z } = require('zod');
 const SignUpValidationSchema = z.object({
   name: z.string().min(3),
   email: z.string().email(),
-  password: z.string().min(5),
+  password: z.string().min(6).max(16),
   goal: z.enum(['Lose fat', 'Maintain', 'Gain Muscle']),
   gender: z.enum(['Male', 'Female']),
   age: z.number().int(),
@@ -14,7 +14,7 @@ const SignUpValidationSchema = z.object({
 
 const SignInValidationSchema = z.object({
   email: z.string().email(),
-  password: z.string().min(5),
+  password: z.string().min(6).max(16),
 });
 
 const UpdateUserValidationSchema = z
@@ -28,4 +28,22 @@ const UpdateUserValidationSchema = z
   .strict()
   .refine(obj => Object.keys(obj).length !== 0, 'Specify fields you want to update!');
 
-module.exports = { SignUpValidationSchema, SignInValidationSchema, UpdateUserValidationSchema };
+const UpdateGoalValidationSchema = z
+  .object({
+    goal: z.enum(['Lose fat', 'Maintain', 'Gain Muscle']),
+  })
+  .strict();
+
+const UpdateWeightValidationSchema = z
+  .object({
+    weight: z.number().min(40).max(170),
+  })
+  .strict();
+
+module.exports = {
+  SignUpValidationSchema,
+  SignInValidationSchema,
+  UpdateUserValidationSchema,
+  UpdateGoalValidationSchema,
+  UpdateWeightValidationSchema,
+};
