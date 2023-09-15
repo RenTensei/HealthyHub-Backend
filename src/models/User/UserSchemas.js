@@ -17,4 +17,15 @@ const SignInValidationSchema = z.object({
   password: z.string().min(5),
 });
 
-module.exports = { SignUpValidationSchema, SignInValidationSchema };
+const UpdateUserValidationSchema = z
+  .object({
+    name: z.string().min(3).optional(),
+    gender: z.enum(['Male', 'Female']).optional(),
+    age: z.number().int().optional(),
+    height: z.number().min(140).max(230).optional(),
+    physicalActivityRatio: z.number().min(1.2).max(2.5).optional(),
+  })
+  .strict()
+  .refine(obj => Object.keys(obj).length !== 0, 'Specify fields you want to update!');
+
+module.exports = { SignUpValidationSchema, SignInValidationSchema, UpdateUserValidationSchema };

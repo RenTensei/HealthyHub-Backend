@@ -3,7 +3,12 @@ const jwt = require('jsonwebtoken');
 
 const { handlerWrapper, HttpError, envVars } = require('../helpers');
 const UserModel = require('../models/User/UserModel');
-const { SignUpValidationSchema, SignInValidationSchema } = require('../models/User/UserSchemas');
+const {
+  SignUpValidationSchema,
+  SignInValidationSchema,
+  UpdateUserValidationSchema,
+} = require('../models/User/UserSchemas');
+const extractUpdatedFields = require('../utils/extractUpdatedFields');
 
 const signUp = async (req, res) => {
   const validatedBody = SignUpValidationSchema.parse(req.body);
@@ -46,7 +51,6 @@ const signIn = async (req, res) => {
     expiresIn: '24h',
   });
   const updatedUser = await UserModel.findByIdAndUpdate(existingUser._id, { token }, { new: true });
-  console.log(updatedUser);
 
   res.json({
     token: updatedUser.token,
@@ -79,8 +83,18 @@ const current = async (req, res) => {
   });
 };
 
+const updateUser = async (req, res) => {
+  const validatedBody = UpdateUserValidationSchema.parse(req.body);
+
+  const updatedUser = await UserModel.findByIdAndUpdate(req.user._id, validatedBody, { new: true });
+  const updatedFields = extractUpdatedFields(validatedBody, updatedUser);
+
+  res.json(updatedFields);
+};
+
 module.exports = {
   signUp: handlerWrapper(signUp),
   signIn: handlerWrapper(signIn),
   current: handlerWrapper(current),
+  updateUser: handlerWrapper(updateUser),
 };
