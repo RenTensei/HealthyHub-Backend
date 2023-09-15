@@ -6,22 +6,38 @@ const UserModel = require('../models/User/UserModel');
 const { UserValidationSchema } = require('../models/User/UserSchemas');
 
 const signUp = async (req, res) => {
-  const validatedBody = UserValidationSchema.parse(req.body);
+  const { name, email, password, goal, gender, age, height, weight, physicalActivityRatio } =
+    UserValidationSchema.parse(req.body);
 
-  const existingUserEmail = await UserModel.findOne({
-    email: validatedBody.email,
-  });
-  if (existingUserEmail) throw new HttpError('409', 'Email already in use!');
+  const existingUserEmail = await UserModel.findOne({ email });
+  if (existingUserEmail) throw new HttpError(409, 'Email already in use!');
 
-  const hashedPassword = await bcrypt.hash(validatedBody.password, 10);
+  const hashedPassword = await bcrypt.hash(password, 10);
 
   const newUser = await UserModel.create({
-    email: validatedBody.email,
+    name,
+    email,
     password: hashedPassword,
+    goal,
+    gender,
+    age,
+    height,
+    weight,
+    physicalActivityRatio,
   });
 
   res.status(201).json({
-    user: { email: newUser.email },
+    user: {
+      name: newUser.name,
+      email: newUser.email,
+      goal: newUser.goal,
+      gender: newUser.gender,
+      age: newUser.age,
+      height: newUser.height,
+      weight: newUser.weight,
+      physicalActivityRatio: newUser.physicalActivityRatio,
+      BMR: newUser.BMR,
+    },
   });
 };
 
