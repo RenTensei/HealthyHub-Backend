@@ -78,8 +78,17 @@ const current = async (req, res) => {
   });
 };
 
+const logout = async (req, res) => {
+  const validatedBody = SignInValidationSchema.parse(req.body);
+  const existingUser = await UserModel.findOne({ email: validatedBody.email });
+  if (!existingUser) throw new HttpError(401, 'Email or password is wrong!');
+
+  await UserModel.findByIdAndUpdate(existingUser._id, { token: '' });
+};
+
 module.exports = {
   signUp: handlerWrapper(signUp),
   signIn: handlerWrapper(signIn),
   current: handlerWrapper(current),
+  logout: handlerWrapper(logout),
 };
