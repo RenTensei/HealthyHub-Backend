@@ -7,6 +7,7 @@ const { fromZodError } = require('zod-validation-error');
 
 const { HttpError } = require('./helpers');
 const authRoutes = require('./routes/auth');
+const foodIntakeRoutes = require('./routes/foodIntake');
 const userRoutes = require('./routes/user');
 
 const app = express();
@@ -19,6 +20,7 @@ app.use(express.static('public'));
 // apply routes
 app.use('/api/auth', authRoutes);
 app.use('/api/user', userRoutes);
+app.use('/api/user', foodIntakeRoutes);
 
 // non-existing route
 app.use((_, res) => {
