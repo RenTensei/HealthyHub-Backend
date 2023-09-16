@@ -185,189 +185,362 @@
           }
         }
       }
+    },
+    "/api/user/statistics":{
+      "get": {
+        "tags": ["User"],
+        "summary": "User information",
+
+        "parameters": [],
+        "security": [{ "Bearer": [] }],
+
+        "requestBody": {
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request (invalid request body)"
+          }
+        }
+      }
+    },
+    "/api/user/goal":{
+      "put": {
+        "tags": ["User"],
+        "summary": "User goal information",
+
+        "parameters": [],
+        "security": [{ "Bearer": [] }],
+
+        "requestBody": {
+          "description": "Goal object",
+          "required": true,
+          "content":{
+            "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserGoal"
+                }
+              }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserGoal"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request (invalid request body)"
+          }
+        }
+      }
+    },
+    "/api/user/weight":{
+      "put": {
+        "tags": ["User"],
+        "summary": "User goal information",
+
+        "parameters": [],
+        "security": [{ "Bearer": [] }],
+
+        "requestBody": {
+          "description": "Weight object",
+          "required": true,
+          "content":{
+            "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserWeight"
+                }
+              }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserWeight"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request (invalid request body)"
+          }
+        }
+      }
+    },
+    "/api/user/info":{
+      "patch": {
+        "tags": ["User"],
+        "summary": "User  information",
+
+        "parameters": [],
+        "security": [{ "Bearer": [] }],
+
+        "requestBody": {
+          "description": "User object",
+          "required": true,
+          "content":{
+            "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserInfo"
+                }
+              }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserWeight"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request (invalid request body)"
+          }
+        }
+      }
     }
-  },
+},
   "components": {
-    "schemas": {
-    "RegistrationRequest": {
-      "type": "object",
-      "required": ["name","email", "password","goal","gender","age", "height","weight","physicalActivityRatio"],
-      "properties": {
-        "name":{
-          "type": "string",
-          "description": "User's name",
-          "example": "username"
-        },
-        "email": {
-          "type": "string",
-          "description": "User's email",
-          "format": "email"
-        },
-        "password": {
-          "type": "string",
-          "description": "User's password",
-          "example": "qwerty123"
-        },
-        "goal":{
-          "type": "string",
-          "description": "User's goal",
-          "example":"Lose fat"
-        },
-        "gender": {
-          "type": "string",
-          "description": "User's gender",
-          "example":"Female"
-        },
-        "age": {
-          "type": "integer",
-          "description": "User's age",
-          "example":"35"
-        },
-        "height":{
-          "type": "integer",
-          "description": "User's height",
-          "example":"170"
-        },
-        "weight":{
-          "type": "integer",
-          "description": "User's weight",
-          "example":"65"
-        },
-        "physicalActivityRatio":{
-          "type": "number",
-          "description": "User's activity ratio",
-          "example":"1.5"
-        }
-      }
-    },
-    "RegistrationResponse": {
+      "schemas": {
+      "RegistrationRequest": {
         "type": "object",
+        "required": ["name","email", "password","goal","gender","age", "height","weight","physicalActivityRatio"],
         "properties": {
-        "name":{
-          "type": "string",
-          "description": "User's name",
-          "example": "username"
-        },
-        "email": {
-          "type": "string",
-          "description": "User's email",
-          "format": "email"
-        },
-        "goal":{
-          "type": "string",
-          "description": "User's goal",
-          "example":"Lose fat"
-        },
-        "gender": {
-          "type": "string",
-          "description": "User's gender",
-          "example":"Female"
-        },
-        "age": {
-          "type": "integer",
-          "description": "User's age",
-          "example":"35"
-        },
-        "height":{
-          "type": "integer",
-          "description": "User's height",
-          "example":"170"
-        },
-        "weight":{
-          "type": "integer",
-          "description": "User's weight",
-          "example":"65"
-        },
-        "physicalActivityRatio":{
-          "type": "number",
-          "description": "User's activity ratio",
-          "example":"1.5"
-        },
-        "bmr":{
-          "type": "integer",
-          "description": "basic metabolic rate",
-          "example":"1700"
+          "name":{
+            "type": "string",
+            "description": "User's name",
+            "example": "username"
+          },
+          "email": {
+            "type": "string",
+            "description": "User's email",
+            "format": "email"
+          },
+          "password": {
+            "type": "string",
+            "description": "User's password",
+            "example": "qwerty123"
+          },
+          "goal":{
+            "type": "string",
+            "description": "User's goal",
+            "example":"Lose fat"
+          },
+          "gender": {
+            "type": "string",
+            "description": "User's gender",
+            "example":"Female"
+          },
+          "age": {
+            "type": "integer",
+            "description": "User's age",
+            "example":"35"
+          },
+          "height":{
+            "type": "integer",
+            "description": "User's height",
+            "example":"170"
+          },
+          "weight":{
+            "type": "integer",
+            "description": "User's weight",
+            "example":"65"
+          },
+          "physicalActivityRatio":{
+            "type": "number",
+            "description": "User's activity ratio",
+            "example":"1.5"
+          }
         }
-      }
-      
-    },
-    "LoginRequest": {
-      "type": "object",
-      "required": ["email", "password"],
-      "properties": {
-        "email": {
-          "type": "string",
-          "description": "User's email",
-          "format": "email"
-        },
-        "password": {
-          "type": "string",
-          "description": "User's password",
-          "example": "qwerty123"
+      },
+      "RegistrationResponse": {
+          "type": "object",
+          "properties": {
+          "name":{
+            "type": "string",
+            "description": "User's name",
+            "example": "username"
+          },
+          "email": {
+            "type": "string",
+            "description": "User's email",
+            "format": "email"
+          },
+          "goal":{
+            "type": "string",
+            "description": "User's goal",
+            "example":"Lose fat"
+          },
+          "gender": {
+            "type": "string",
+            "description": "User's gender",
+            "example":"Female"
+          },
+          "age": {
+            "type": "integer",
+            "description": "User's age",
+            "example":"35"
+          },
+          "height":{
+            "type": "integer",
+            "description": "User's height",
+            "example":"170"
+          },
+          "weight":{
+            "type": "integer",
+            "description": "User's weight",
+            "example":"65"
+          },
+          "physicalActivityRatio":{
+            "type": "number",
+            "description": "User's activity ratio",
+            "example":"1.5"
+          },
+          "bmr":{
+            "type": "integer",
+            "description": "basic metabolic rate",
+            "example":"1700"
+          }
         }
-    }
-    },
-    "LoginResponse":{
-    "type": "object",
-    "properties":{
-      "token": {
-        "type":"string",
-        "example":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9"},
-      "user":{
-          "$ref": "#/components/schemas/UserInformations"
+        
+      },
+      "LoginRequest": {
+        "type": "object",
+        "required": ["email", "password"],
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "User's email",
+            "format": "email"
+          },
+          "password": {
+            "type": "string",
+            "description": "User's password",
+            "example": "qwerty123"
+          }
       }
-      
-    }
-  
-    },
-    "UserInformations":{
+      },
+      "LoginResponse":{
       "type": "object",
       "properties":{
-        "name":{
-          "type": "string",
-          "example":"username"
-        },
-        "email":{
+        "token": {
           "type":"string",
-          "format": "email"
-        },
-        "goal":{
-          "type":"string",
-          "example":"Lose fat"
-        },
-        "gender":{
-          "type":"string",
-          "example":"Female"
-        },
-        "age":{
-          "type":"integer",
-          "example":"35"
-        },
-        "height":{
-          "type":"integer",
-          "example":"170"
-        },
-        "weight":{
-          "type":"integer",
-          "example":"65"
-        },
-        "physicalActivityRatio":{
-          "type":"number",
-          "example":"1.5"
-        },
-        "bmr":{
-          "type":"integer",
-          "example":"1700"
+          "example":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9"},
+        "user":{
+            "$ref": "#/components/schemas/UserInformations"
+        }
+        
+      }
+    
+      },
+      "UserInformations":{
+        "type": "object",
+        "properties":{
+          "name":{
+            "type": "string",
+            "example":"username"
+          },
+          "email":{
+            "type":"string",
+            "format": "email"
+          },
+          "goal":{
+            "type":"string",
+            "example":"Lose fat"
+          },
+          "gender":{
+            "type":"string",
+            "example":"Female"
+          },
+          "age":{
+            "type":"integer",
+            "example":"35"
+          },
+          "height":{
+            "type":"integer",
+            "example":"170"
+          },
+          "weight":{
+            "type":"integer",
+            "example":"65"
+          },
+          "physicalActivityRatio":{
+            "type":"number",
+            "example":"1.5"
+          },
+          "bmr":{
+            "type":"integer",
+            "example":"1700"
+          }
+        }
+      },
+      "UserResponse":{
+        "type":"object",
+        "properties":{
+          "waterIntake":{
+            "type":"integer",
+            "example":"1200"
+          },
+          "caloriesIntake":{
+            "type":"integer",
+            "example":"1200"
+          },
+          "weight":{
+            "type":"integer",
+            "example":"65"
+          }
+        }
+
+      },
+      "UserGoal":{
+        "type":"object",
+        "required":true,
+        "properties":{
+          "goal":{
+            "type":"string",
+            "example":"Lose fat"
+          }
+        }
+      },
+      "UserWeight":{
+        "type":"object",
+        "required":true,
+        "properties":{
+          "weight":{
+            "type":"integer",
+            "example":"70"
+          }
         }
       }
-    }
-  },
+    },
     "securitySchemes": {
-      "Bearer": {
-        "type": "http",
-        "scheme": "bearer",
-        "bearerFormat": "JWT"
-      }
+        "Bearer": {
+          "type": "http",
+          "scheme": "bearer",
+          "bearerFormat": "JWT"
+        }
     }
   }
 }

@@ -1,5 +1,7 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const fs = require('fs');
+const Jimp = require('jimp');
 
 const { handlerWrapper, HttpError, envVars } = require('../helpers');
 const UserModel = require('../models/User/UserModel');
@@ -86,9 +88,32 @@ const logout = async (req, res) => {
   await UserModel.findByIdAndUpdate(existingUser._id, { token: '' });
 };
 
+const avatar = async (req, res) => {
+  // adress  public/avatars  folder
+  const avatarsDir = path.join(__dirname, '../', 'public', 'avatars');
+  const { path: tempUpload, originalname } = req.file;
+
+  const { _id } = req.user;
+  const filename = `${_id}_${originalname}`;
+
+  const resultUpload = path.join(avatarsDir, filename);
+
+  await fs.rename(tempUpload, resultUpload);
+
+  await Jimp.read(resultUpload)
+    .then(image => image.resize(250, 250).write(resultUpload))
+    .catch(error => console.error(error));
+
+  const avatarURL = path.join('avatars', filename);
+  await UserModel.findByIdAndUpdate(_id, { avatarURL });
+
+  res.json({ avatarURL });
+};
+
 module.exports = {
   signUp: handlerWrapper(signUp),
   signIn: handlerWrapper(signIn),
   current: handlerWrapper(current),
   logout: handlerWrapper(logout),
+  avatar: handlerWrapper(avatar),
 };
