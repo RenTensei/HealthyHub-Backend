@@ -16,9 +16,14 @@
     {
       "name": "Auth",
       "description": "Authorization endpoints"
-    },{
+    },
+    {
       "name":"User",
       "description":"User endpoints"
+    },
+    {
+      "name":"Recommended-food",
+      "description":"Recommended food endpoints"
     }
   ],
    "paths": {
@@ -109,7 +114,7 @@
       }
     },
      "/api/auth/current": {
-      "post": {
+      "get": {
         "tags": ["Auth"],
         "summary": "User currents",
 
@@ -117,16 +122,9 @@
         "security": [{ "Bearer": [] }],
 
         "requestBody": {
-          "description": "Login's object",
-          "required": true,
+          "description": "Body object",
 
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/LoginRequest"
-              }
-            }
-          }
+          "content": {}
         },
         "responses": {
           "200": {
@@ -176,6 +174,38 @@
         },
         "responses": {
           "204": {
+            "description": "Successful logout",
+            "content": {}
+          },
+          "400": {
+            "description": "Bad request (invalid request body)",
+            "content": {}
+          }
+        }
+      }
+    },
+     "/api/auth/avatar": {
+      "patch": {
+        "tags": ["Auth"],
+        "summary": "User avatar update",
+
+        "parameters": [],
+        "security": [{ "Bearer": [] }],
+
+        "requestBody": {
+          "description": "avatar files",
+          "required": true,
+
+          "content": {
+            "multipart/form-data":{
+              "schema":{
+                "$ref": "#/components/schemas/Employee"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
             "description": "Successful operation",
             "content": {}
           },
@@ -186,15 +216,24 @@
         }
       }
     },
-    "/api/user/statistics":{
-      "get": {
-        "tags": ["User"],
-        "summary": "User information",
+    "/api/auth/info":{
+      "patch": {
+        "tags": ["Auth"],
+        "summary": "User  information updated",
 
         "parameters": [],
         "security": [{ "Bearer": [] }],
 
         "requestBody": {
+          "description": "User object",
+          "required": true,
+          "content":{
+            "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserInfo"
+                }
+              }
+          }
         },
         "responses": {
           "200": {
@@ -202,7 +241,43 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/UserResponse"
+                  "$ref": "#/components/schemas/UserInfo"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request (invalid request body)"
+          }
+        }
+      }
+    },
+    "/api/auth/password":{
+      "patch": {
+        "tags": ["Auth"],
+        "summary": "User  password update",
+
+        "parameters": [],
+        "security": [{ "Bearer": [] }],
+
+        "requestBody": {
+          "description": "User password",
+          "required": true,
+          "content":{
+            "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserPassword"
+                }
+              }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserPassword"
                 }
               }
             }
@@ -285,21 +360,48 @@
         }
       }
     },
-    "/api/user/info":{
-      "patch": {
+    "/api/user/statistics":{
+      "get": {
         "tags": ["User"],
-        "summary": "User  information",
+        "summary": "User information",
 
         "parameters": [],
         "security": [{ "Bearer": [] }],
 
         "requestBody": {
-          "description": "User object",
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request (invalid request body)"
+          }
+        }
+      }   
+    },
+    "/api/user/food-intake":{
+      "post": {
+        "tags": ["User"],
+        "summary": "User food intake",
+
+        "parameters": [],
+        "security": [{ "Bearer": [] }],
+
+        "requestBody":{
+          "description": "Add food intake",
           "required": true,
           "content":{
             "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/UserInfo"
+                  "$ref": "#/components/schemas/FoodIntakeRequest"
                 }
               }
           }
@@ -310,7 +412,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/UserWeight"
+                  "$ref": "#/components/schemas/FoodIntakeRequest"
                 }
               }
             }
@@ -320,8 +422,94 @@
           }
         }
       }
+    },
+    "/api/user/food-intake/:id":{
+      "post": {
+        "tags": ["User"],
+        "summary": "User food intake",
+
+        "parameters": [],
+        "security": [{ "Bearer": [] }],
+
+        "requestBody":{
+          "description": "Add food intake",
+          "required": true,
+          "content":{
+            "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FoodIntakeRequest"
+                }
+              }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FoodIntakeRequest"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request (invalid request body)"
+          }
+        }
+      }
+       
+    },
+    "/api/user/water-intake":{
+      "post": {
+        "tags": ["User"],
+        "summary": "User water intake",
+
+        "parameters": [],
+        "security": [{ "Bearer": [] }],
+
+        "requestBody":{
+          "description": "Water intake",
+          "required": true,
+          "content":{
+            "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WaterRequest"
+                }
+              }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FoodIntakeRequest"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request (invalid request body)"
+          }
+        }
+      }
+    },
+    " /api/recommended-food":{
+      "get": {
+        "tags": ["Recommended-food"],
+        "summary": "Recommended-food",
+
+        "parameters": [],
+
+        "requestBody":{
+          "description": "Recommended-food",
+          "content":{}
+        }
+      }
     }
-},
+  },
   "components": {
       "schemas": {
       "RegistrationRequest": {
@@ -356,22 +544,22 @@
           "age": {
             "type": "integer",
             "description": "User's age",
-            "example":"35"
+            "example":35
           },
           "height":{
             "type": "integer",
             "description": "User's height",
-            "example":"170"
+            "example":170
           },
           "weight":{
             "type": "integer",
             "description": "User's weight",
-            "example":"65"
+            "example":65
           },
           "physicalActivityRatio":{
             "type": "number",
             "description": "User's activity ratio",
-            "example":"1.5"
+            "example":1.5
           }
         }
       },
@@ -401,27 +589,27 @@
           "age": {
             "type": "integer",
             "description": "User's age",
-            "example":"35"
+            "example":35
           },
           "height":{
             "type": "integer",
             "description": "User's height",
-            "example":"170"
+            "example":170
           },
           "weight":{
             "type": "integer",
             "description": "User's weight",
-            "example":"65"
+            "example":65
           },
           "physicalActivityRatio":{
             "type": "number",
             "description": "User's activity ratio",
-            "example":"1.5"
+            "example":1.5
           },
           "bmr":{
-            "type": "integer",
+            "type": "number",
             "description": "basic metabolic rate",
-            "example":"1700"
+            "example":1700
           }
         }
         
@@ -455,6 +643,15 @@
       }
     
       },
+      "Employee":{
+        "type":"object",
+        "properties":{
+          "name":{
+            "type":"string",
+            "format": "binary"
+          }
+        }
+      },
       "UserInformations":{
         "type": "object",
         "properties":{
@@ -476,23 +673,23 @@
           },
           "age":{
             "type":"integer",
-            "example":"35"
+            "example":35
           },
           "height":{
             "type":"integer",
-            "example":"170"
+            "example":170
           },
           "weight":{
             "type":"integer",
-            "example":"65"
+            "example":65
           },
           "physicalActivityRatio":{
             "type":"number",
-            "example":"1.5"
+            "example":1.5
           },
           "bmr":{
-            "type":"integer",
-            "example":"1700"
+            "type":"number",
+            "example":1700
           }
         }
       },
@@ -501,15 +698,15 @@
         "properties":{
           "waterIntake":{
             "type":"integer",
-            "example":"1200"
+            "example":1200
           },
           "caloriesIntake":{
             "type":"integer",
-            "example":"1200"
+            "example":1200
           },
           "weight":{
             "type":"integer",
-            "example":"65"
+            "example":65
           }
         }
 
@@ -530,7 +727,37 @@
         "properties":{
           "weight":{
             "type":"integer",
-            "example":"70"
+            "example":70
+          }
+        }
+      },
+      "FoodIntakeRequest":{
+        "type":"object",
+        "required": true,
+        "properties":{
+          "mealName": {
+            "type":"string",
+            "example":"toast"
+          },
+          "mealType": {
+            "type":"string",
+            "example":"Lunch"
+          },
+          "carbohydrates": {
+            "type":"integer",
+            "example":45
+          },
+          "protein":{
+            "type":"integer",
+            "example":10
+          },
+          "fat":{
+            "type":"integer",
+            "example":110
+          },
+          "calories": {
+            "type":"integer",
+            "example":460
           }
         }
       }

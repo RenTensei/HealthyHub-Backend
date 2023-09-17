@@ -1,11 +1,20 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const fs = require('fs');
+const fs = require('fs/promises');
 const Jimp = require('jimp');
+const path = require('path');
 
 const { handlerWrapper, HttpError, envVars } = require('../helpers');
 const UserModel = require('../models/User/UserModel');
-const { SignUpValidationSchema, SignInValidationSchema } = require('../models/User/UserSchemas');
+const {
+  SignUpValidationSchema,
+  SignInValidationSchema,
+  UpdateUserValidationSchema,
+} = require('../models/User/UserSchemas');
+
+const extractUpdatedFields = require('../utils/extractUpdatedFields');
+
+const { response } = require('../app');
 
 const signUp = async (req, res) => {
   const validatedBody = SignUpValidationSchema.parse(req.body);
@@ -85,7 +94,9 @@ const logout = async (req, res) => {
   const existingUser = await UserModel.findOne({ email: validatedBody.email });
   if (!existingUser) throw new HttpError(401, 'Email or password is wrong!');
 
-  await UserModel.findByIdAndUpdate(existingUser._id, { token: '' });
+  await UserModel.findByIdAndUpdate(existingUser._id, { token: '' }).exec();
+
+  res.status(204).end();
 };
 
 const avatar = async (req, res) => {
@@ -94,6 +105,7 @@ const avatar = async (req, res) => {
   const { path: tempUpload, originalname } = req.file;
 
   const { _id } = req.user;
+
   const filename = `${_id}_${originalname}`;
 
   const resultUpload = path.join(avatarsDir, filename);
@@ -110,10 +122,20 @@ const avatar = async (req, res) => {
   res.json({ avatarURL });
 };
 
+const updateUser = async (req, res) => {
+  const validatedBody = UpdateUserValidationSchema.parse(req.body);
+
+  const updatedUser = await UserModel.findByIdAndUpdate(req.user._id, validatedBody, { new: true });
+  const updatedFields = extractUpdatedFields(validatedBody, updatedUser);
+
+  // res.json({ user: { ...updatedFields } });
+  res.json(updatedFields);
+};
 module.exports = {
   signUp: handlerWrapper(signUp),
   signIn: handlerWrapper(signIn),
   current: handlerWrapper(current),
   logout: handlerWrapper(logout),
   avatar: handlerWrapper(avatar),
+  updateUser: handlerWrapper(updateUser),
 };
