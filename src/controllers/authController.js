@@ -1,9 +1,20 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const fs = require('fs/promises');
+const Jimp = require('jimp');
+const path = require('path');
 
 const { handlerWrapper, HttpError, envVars } = require('../helpers');
 const UserModel = require('../models/User/UserModel');
-const { SignUpValidationSchema, SignInValidationSchema } = require('../models/User/UserSchemas');
+const {
+  SignUpValidationSchema,
+  SignInValidationSchema,
+  UpdateUserValidationSchema,
+} = require('../models/User/UserSchemas');
+
+const extractUpdatedFields = require('../utils/extractUpdatedFields');
+
+// const { response } = require('../app');
 
 const signUp = async (req, res) => {
   const validatedBody = SignUpValidationSchema.parse(req.body);
@@ -78,8 +89,57 @@ const current = async (req, res) => {
   });
 };
 
+const logout = async (req, res) => {
+  const updatedUser = await UserModel.findByIdAndUpdate(
+    req.user._id,
+    {
+      token: null,
+    },
+    { new: true }
+  );
+
+  if (!updatedUser || updatedUser.token) throw new HttpError(500, 'Internal error');
+
+  res.status(204).end();
+};
+
+const avatar = async (req, res) => {
+  // adress  public/avatars  folder
+  const avatarsDir = path.join(__dirname, '../', 'public', 'avatars');
+  const { path: tempUpload, originalname } = req.file;
+
+  const { _id } = req.user;
+
+  const filename = `${_id}_${originalname}`;
+
+  const resultUpload = path.join(avatarsDir, filename);
+
+  await fs.rename(tempUpload, resultUpload);
+
+  await Jimp.read(resultUpload)
+    .then(image => image.resize(250, 250).write(resultUpload))
+    .catch(error => console.error(error));
+
+  const avatarURL = path.join('avatars', filename);
+  await UserModel.findByIdAndUpdate(_id, { avatarURL });
+
+  res.json({ avatarURL });
+};
+
+const updateUser = async (req, res) => {
+  const validatedBody = UpdateUserValidationSchema.parse(req.body);
+
+  const updatedUser = await UserModel.findByIdAndUpdate(req.user._id, validatedBody, { new: true });
+  const updatedFields = extractUpdatedFields(validatedBody, updatedUser);
+
+  // res.json({ user: { ...updatedFields } });
+  res.json(updatedFields);
+};
 module.exports = {
   signUp: handlerWrapper(signUp),
   signIn: handlerWrapper(signIn),
   current: handlerWrapper(current),
+  logout: handlerWrapper(logout),
+  avatar: handlerWrapper(avatar),
+  updateUser: handlerWrapper(updateUser),
 };
