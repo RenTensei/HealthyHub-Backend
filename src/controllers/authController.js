@@ -12,8 +12,6 @@ const {
   UpdateUserValidationSchema,
 } = require('../models/User/UserSchemas');
 
-const extractUpdatedFields = require('../utils/extractUpdatedFields');
-
 // const { response } = require('../app');
 
 const signUp = async (req, res) => {
@@ -126,20 +124,10 @@ const avatar = async (req, res) => {
   res.json({ avatarURL });
 };
 
-const updateUser = async (req, res) => {
-  const validatedBody = UpdateUserValidationSchema.parse(req.body);
-
-  const updatedUser = await UserModel.findByIdAndUpdate(req.user._id, validatedBody, { new: true });
-  const updatedFields = extractUpdatedFields(validatedBody, updatedUser);
-
-  // res.json({ user: { ...updatedFields } });
-  res.json(updatedFields);
-};
 module.exports = {
   signUp: handlerWrapper(signUp),
   signIn: handlerWrapper(signIn),
   current: handlerWrapper(current),
   logout: handlerWrapper(logout),
   avatar: handlerWrapper(avatar),
-  updateUser: handlerWrapper(updateUser),
 };
