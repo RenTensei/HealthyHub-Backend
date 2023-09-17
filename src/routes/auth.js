@@ -19,3 +19,4 @@ router.patch('/avatar', authMiddleware, upload.single('avatar'), authController.
 router.patch('/info', authMiddleware, authController.updateUser);
 
 module.exports = router;
+
