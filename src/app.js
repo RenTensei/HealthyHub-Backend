@@ -23,6 +23,7 @@ app.use(express.static('public'));
 // apply routes
 app.use('/api/auth', authRoutes);
 app.use('/api/user', userRoutes);
+
 //   swagger routes
 app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
