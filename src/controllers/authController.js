@@ -14,7 +14,7 @@ const {
 
 const extractUpdatedFields = require('../utils/extractUpdatedFields');
 
-const { response } = require('../app');
+// const { response } = require('../app');
 
 const signUp = async (req, res) => {
   const validatedBody = SignUpValidationSchema.parse(req.body);
@@ -90,11 +90,15 @@ const current = async (req, res) => {
 };
 
 const logout = async (req, res) => {
-  const validatedBody = SignInValidationSchema.parse(req.body);
-  const existingUser = await UserModel.findOne({ email: validatedBody.email });
-  if (!existingUser) throw new HttpError(401, 'Email or password is wrong!');
+  const updatedUser = await UserModel.findByIdAndUpdate(
+    req.user._id,
+    {
+      token: null,
+    },
+    { new: true }
+  );
 
-  await UserModel.findByIdAndUpdate(existingUser._id, { token: '' }).exec();
+  if (!updatedUser || updatedUser.token) throw new HttpError(500, 'Internal error');
 
   res.status(204).end();
 };

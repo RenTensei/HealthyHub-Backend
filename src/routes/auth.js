@@ -12,7 +12,7 @@ router.post('/signin', authController.signIn);
 
 router.get('/current', authMiddleware, authController.current);
 
-router.post('/logout', authMiddleware, authController.logout);
+router.get('/logout', authMiddleware, authController.logout);
 
 router.patch('/avatar', authMiddleware, upload.single('avatar'), authController.avatar);
 
