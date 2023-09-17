@@ -11,6 +11,7 @@ const swaggerDocument = require('../swagger.json');
 
 const { HttpError } = require('./helpers');
 const authRoutes = require('./routes/auth');
+const foodIntakeRoutes = require('./routes/foodIntake');
 const userRoutes = require('./routes/user');
 
 const app = express();
@@ -23,6 +24,7 @@ app.use(express.static('public'));
 // apply routes
 app.use('/api/auth', authRoutes);
 app.use('/api/user', userRoutes);
+app.use('/api/user', foodIntakeRoutes);
 
 //   swagger routes
 app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
