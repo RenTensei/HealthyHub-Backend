@@ -11,7 +11,7 @@ const foodIntakeSchema = new Schema(
       enum: ['Breakfast', 'Lunch', 'Dinner', 'Snack'],
       required: true,
     },
-    carbohydrates: {
+    carbonohidrates: {
       type: Number,
       required: true,
     },
