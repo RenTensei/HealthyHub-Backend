@@ -1,0 +1,773 @@
+{
+"openapi": "3.0.3",
+  "info": {
+    "version": "1.0.0",
+    "title": "healthyhub-backend",
+    "description": "Showing off swagger-ui-express",
+    "license": {
+      "name": "MIT",
+      "url": "https://opensource.org/licenses/MIT"
+    }
+  },
+  "consumes": ["application/json","multipart/form-data"],
+  "produces": ["application/json"],
+  "servers": [{ "url": "http://localhost:3000" },{"url": "https://healthyhub.onrender.com/"}],
+  "tags": [
+    {
+      "name": "Auth",
+      "description": "Authorization endpoints"
+    },
+    {
+      "name":"User",
+      "description":"User endpoints"
+    },
+    {
+      "name":"Recommended-food",
+      "description":"Recommended food endpoints"
+    }
+  ],
+   "paths": {
+    "/api/auth/signup": {
+      "post": {
+        "tags": ["Auth"],
+        "summary": "User registration",
+
+        "parameters": [],
+
+        "requestBody": {
+          "description": "Registration's object",
+          "required": true,
+
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegistrationRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RegistrationResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request (invalid request body)",
+            "content": {}
+          },
+          "409": {
+            "description": "Email already in use!",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/api/auth/signin": {
+      "post": {
+        "tags": ["Auth"],
+        "summary": "User login",
+
+        "parameters": [],
+
+        "requestBody": {
+          "description": "Login's object",
+          "required": true,
+
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+          "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoginResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request (invalid request body)",
+            "content": {}
+          },
+          "401": {
+            "description": "Email or password is wrong!",
+            "content": {}
+          },
+          "404": {
+            "description": "Not found",
+            "content": {}
+          }
+        }
+      }
+    },
+     "/api/auth/current": {
+      "get": {
+        "tags": ["Auth"],
+        "summary": "User currents",
+
+        "parameters": [],
+        "security": [{ "Bearer": [] }],
+
+        "requestBody": {
+          "description": "Body object",
+
+          "content": {}
+        },
+        "responses": {
+          "200": {
+          "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoginResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request (invalid request body)",
+            "content": {}
+          },
+          "401": {
+            "description": "Email or password is wrong!",
+            "content": {}
+          },
+          "404": {
+            "description": "Not found",
+            "content": {}
+          }
+        }
+      }
+    },
+     "/api/auth/logout": {
+      "post": {
+        "tags": ["Auth"],
+        "summary": "User logout",
+
+        "parameters": [],
+        "security": [{ "Bearer": [] }],
+
+        "requestBody": {
+          "description": "Logout's object",
+          "required": true,
+
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": "Successful logout",
+            "content": {}
+          },
+          "400": {
+            "description": "Bad request (invalid request body)",
+            "content": {}
+          }
+        }
+      }
+    },
+     "/api/auth/avatar": {
+      "patch": {
+        "tags": ["Auth"],
+        "summary": "User avatar update",
+
+        "parameters": [],
+        "security": [{ "Bearer": [] }],
+
+        "requestBody": {
+          "description": "avatar files",
+          "required": true,
+
+          "content": {
+            "multipart/form-data":{
+              "schema":{
+                "$ref": "#/components/schemas/Employee"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {}
+          },
+          "400": {
+            "description": "Bad request (invalid request body)",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/api/auth/info":{
+      "patch": {
+        "tags": ["Auth"],
+        "summary": "User  information updated",
+
+        "parameters": [],
+        "security": [{ "Bearer": [] }],
+
+        "requestBody": {
+          "description": "User object",
+          "required": true,
+          "content":{
+            "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserInfo"
+                }
+              }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserInfo"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request (invalid request body)"
+          }
+        }
+      }
+    },
+    "/api/auth/password":{
+      "patch": {
+        "tags": ["Auth"],
+        "summary": "User  password update",
+
+        "parameters": [],
+        "security": [{ "Bearer": [] }],
+
+        "requestBody": {
+          "description": "User password",
+          "required": true,
+          "content":{
+            "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserPassword"
+                }
+              }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserPassword"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request (invalid request body)"
+          }
+        }
+      }
+    },
+    "/api/user/goal":{
+      "put": {
+        "tags": ["User"],
+        "summary": "User goal information",
+
+        "parameters": [],
+        "security": [{ "Bearer": [] }],
+
+        "requestBody": {
+          "description": "Goal object",
+          "required": true,
+          "content":{
+            "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserGoal"
+                }
+              }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserGoal"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request (invalid request body)"
+          }
+        }
+      }
+    },
+    "/api/user/weight":{
+      "put": {
+        "tags": ["User"],
+        "summary": "User goal information",
+
+        "parameters": [],
+        "security": [{ "Bearer": [] }],
+
+        "requestBody": {
+          "description": "Weight object",
+          "required": true,
+          "content":{
+            "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserWeight"
+                }
+              }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserWeight"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request (invalid request body)"
+          }
+        }
+      }
+    },
+    "/api/user/statistics":{
+      "get": {
+        "tags": ["User"],
+        "summary": "User information",
+
+        "parameters": [],
+        "security": [{ "Bearer": [] }],
+
+        "requestBody": {
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request (invalid request body)"
+          }
+        }
+      }   
+    },
+    "/api/user/food-intake":{
+      "post": {
+        "tags": ["User"],
+        "summary": "User food intake",
+
+        "parameters": [],
+        "security": [{ "Bearer": [] }],
+
+        "requestBody":{
+          "description": "Add food intake",
+          "required": true,
+          "content":{
+            "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FoodIntakeRequest"
+                }
+              }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FoodIntakeRequest"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request (invalid request body)"
+          }
+        }
+      }
+    },
+    "/api/user/food-intake/:id":{
+      "post": {
+        "tags": ["User"],
+        "summary": "User food intake",
+
+        "parameters": [],
+        "security": [{ "Bearer": [] }],
+
+        "requestBody":{
+          "description": "Add food intake",
+          "required": true,
+          "content":{
+            "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FoodIntakeRequest"
+                }
+              }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FoodIntakeRequest"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request (invalid request body)"
+          }
+        }
+      }
+       
+    },
+    "/api/user/water-intake":{
+      "post": {
+        "tags": ["User"],
+        "summary": "User water intake",
+
+        "parameters": [],
+        "security": [{ "Bearer": [] }],
+
+        "requestBody":{
+          "description": "Water intake",
+          "required": true,
+          "content":{
+            "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WaterRequest"
+                }
+              }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FoodIntakeRequest"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request (invalid request body)"
+          }
+        }
+      }
+    },
+    " /api/recommended-food":{
+      "get": {
+        "tags": ["Recommended-food"],
+        "summary": "Recommended-food",
+
+        "parameters": [],
+
+        "requestBody":{
+          "description": "Recommended-food",
+          "content":{}
+        }
+      }
+    }
+  },
+  "components": {
+      "schemas": {
+      "RegistrationRequest": {
+        "type": "object",
+        "required": ["name","email", "password","goal","gender","age", "height","weight","physicalActivityRatio"],
+        "properties": {
+          "name":{
+            "type": "string",
+            "description": "User's name",
+            "example": "username"
+          },
+          "email": {
+            "type": "string",
+            "description": "User's email",
+            "format": "email"
+          },
+          "password": {
+            "type": "string",
+            "description": "User's password",
+            "example": "qwerty123"
+          },
+          "goal":{
+            "type": "string",
+            "description": "User's goal",
+            "example":"Lose fat"
+          },
+          "gender": {
+            "type": "string",
+            "description": "User's gender",
+            "example":"Female"
+          },
+          "age": {
+            "type": "integer",
+            "description": "User's age",
+            "example":35
+          },
+          "height":{
+            "type": "integer",
+            "description": "User's height",
+            "example":170
+          },
+          "weight":{
+            "type": "integer",
+            "description": "User's weight",
+            "example":65
+          },
+          "physicalActivityRatio":{
+            "type": "number",
+            "description": "User's activity ratio",
+            "example":1.5
+          }
+        }
+      },
+      "RegistrationResponse": {
+          "type": "object",
+          "properties": {
+          "name":{
+            "type": "string",
+            "description": "User's name",
+            "example": "username"
+          },
+          "email": {
+            "type": "string",
+            "description": "User's email",
+            "format": "email"
+          },
+          "goal":{
+            "type": "string",
+            "description": "User's goal",
+            "example":"Lose fat"
+          },
+          "gender": {
+            "type": "string",
+            "description": "User's gender",
+            "example":"Female"
+          },
+          "age": {
+            "type": "integer",
+            "description": "User's age",
+            "example":35
+          },
+          "height":{
+            "type": "integer",
+            "description": "User's height",
+            "example":170
+          },
+          "weight":{
+            "type": "integer",
+            "description": "User's weight",
+            "example":65
+          },
+          "physicalActivityRatio":{
+            "type": "number",
+            "description": "User's activity ratio",
+            "example":1.5
+          },
+          "bmr":{
+            "type": "number",
+            "description": "basic metabolic rate",
+            "example":1700
+          }
+        }
+        
+      },
+      "LoginRequest": {
+        "type": "object",
+        "required": ["email", "password"],
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "User's email",
+            "format": "email"
+          },
+          "password": {
+            "type": "string",
+            "description": "User's password",
+            "example": "qwerty123"
+          }
+      }
+      },
+      "LoginResponse":{
+      "type": "object",
+      "properties":{
+        "token": {
+          "type":"string",
+          "example":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9"},
+        "user":{
+            "$ref": "#/components/schemas/UserInformations"
+        }
+        
+      }
+    
+      },
+      "Employee":{
+        "type":"object",
+        "properties":{
+          "name":{
+            "type":"string",
+            "format": "binary"
+          }
+        }
+      },
+      "UserInformations":{
+        "type": "object",
+        "properties":{
+          "name":{
+            "type": "string",
+            "example":"username"
+          },
+          "email":{
+            "type":"string",
+            "format": "email"
+          },
+          "goal":{
+            "type":"string",
+            "example":"Lose fat"
+          },
+          "gender":{
+            "type":"string",
+            "example":"Female"
+          },
+          "age":{
+            "type":"integer",
+            "example":35
+          },
+          "height":{
+            "type":"integer",
+            "example":170
+          },
+          "weight":{
+            "type":"integer",
+            "example":65
+          },
+          "physicalActivityRatio":{
+            "type":"number",
+            "example":1.5
+          },
+          "bmr":{
+            "type":"number",
+            "example":1700
+          }
+        }
+      },
+      "UserResponse":{
+        "type":"object",
+        "properties":{
+          "waterIntake":{
+            "type":"integer",
+            "example":1200
+          },
+          "caloriesIntake":{
+            "type":"integer",
+            "example":1200
+          },
+          "weight":{
+            "type":"integer",
+            "example":65
+          }
+        }
+
+      },
+      "UserGoal":{
+        "type":"object",
+        "required":true,
+        "properties":{
+          "goal":{
+            "type":"string",
+            "example":"Lose fat"
+          }
+        }
+      },
+      "UserWeight":{
+        "type":"object",
+        "required":true,
+        "properties":{
+          "weight":{
+            "type":"integer",
+            "example":70
+          }
+        }
+      },
+      "FoodIntakeRequest":{
+        "type":"object",
+        "required": true,
+        "properties":{
+          "mealName": {
+            "type":"string",
+            "example":"toast"
+          },
+          "mealType": {
+            "type":"string",
+            "example":"Lunch"
+          },
+          "carbohydrates": {
+            "type":"integer",
+            "example":45
+          },
+          "protein":{
+            "type":"integer",
+            "example":10
+          },
+          "fat":{
+            "type":"integer",
+            "example":110
+          },
+          "calories": {
+            "type":"integer",
+            "example":460
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+        "Bearer": {
+          "type": "http",
+          "scheme": "bearer",
+          "bearerFormat": "JWT"
+        }
+    }
+  }
+}

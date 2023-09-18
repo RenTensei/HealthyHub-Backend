@@ -5,7 +5,6 @@ const {
   UpdateUserValidationSchema,
   UpdateWeightValidationSchema,
 } = require('../models/User/UserSchemas');
-const extractUpdatedFields = require('../utils/extractUpdatedFields');
 
 const statistics = async (req, res) => {
   // TODO calculate calories, water based on foodIntake
@@ -13,16 +12,6 @@ const statistics = async (req, res) => {
   const waterIntake = 1200;
 
   res.json({ waterIntake, caloriesIntake, weight: req.user.weight });
-};
-
-const updateUser = async (req, res) => {
-  const validatedBody = UpdateUserValidationSchema.parse(req.body);
-
-  const updatedUser = await UserModel.findByIdAndUpdate(req.user._id, validatedBody, { new: true });
-  const updatedFields = extractUpdatedFields(validatedBody, updatedUser);
-
-  // res.json({ user: { ...updatedFields } });
-  res.json(updatedFields);
 };
 
 const updateUserGoal = async (req, res) => {
@@ -43,7 +32,6 @@ const updateUserWeight = async (req, res) => {
 
 module.exports = {
   statistics: handlerWrapper(statistics),
-  updateUser: handlerWrapper(updateUser),
   updateUserGoal: handlerWrapper(updateUserGoal),
   updateUserWeight: handlerWrapper(updateUserWeight),
 };

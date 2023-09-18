@@ -7,8 +7,6 @@ const router = Router();
 
 router.get('/statistics', authMiddleware, userController.statistics);
 
-router.patch('/info', authMiddleware, userController.updateUser);
-
 router.put('/goal', authMiddleware, userController.updateUserGoal);
 
 router.put('/weight', authMiddleware, userController.updateUserWeight);

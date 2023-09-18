@@ -4,6 +4,10 @@ const { JsonWebTokenError } = require('jsonwebtoken');
 const logger = require('morgan');
 const { ZodError } = require('zod');
 const { fromZodError } = require('zod-validation-error');
+//------------
+const swaggerUi = require('swagger-ui-express');
+const swaggerDocument = require('../swagger.json');
+//------------
 
 const { HttpError } = require('./helpers');
 const authRoutes = require('./routes/auth');
@@ -21,6 +25,9 @@ app.use(express.static('public'));
 app.use('/api/auth', authRoutes);
 app.use('/api/user', userRoutes);
 app.use('/api/user', foodIntakeRoutes);
+
+//   swagger routes
+app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 // non-existing route
 app.use((_, res) => {
