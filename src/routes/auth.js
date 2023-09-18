@@ -16,6 +16,4 @@ router.get('/logout', authMiddleware, authController.logout);
 
 router.patch('/avatar', authMiddleware, upload.single('avatar'), authController.avatar);
 
-router.patch('/info', authMiddleware, authController.updateUser);
-
 module.exports = router;

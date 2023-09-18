@@ -216,42 +216,6 @@
         }
       }
     },
-    "/api/auth/info":{
-      "patch": {
-        "tags": ["Auth"],
-        "summary": "User  information updated",
-
-        "parameters": [],
-        "security": [{ "Bearer": [] }],
-
-        "requestBody": {
-          "description": "User object",
-          "required": true,
-          "content":{
-            "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/UserInfo"
-                }
-              }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Successful operation",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/UserInfo"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad request (invalid request body)"
-          }
-        }
-      }
-    },
     "/api/auth/password":{
       "patch": {
         "tags": ["Auth"],
@@ -278,78 +242,6 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/UserPassword"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad request (invalid request body)"
-          }
-        }
-      }
-    },
-    "/api/user/goal":{
-      "put": {
-        "tags": ["User"],
-        "summary": "User goal information",
-
-        "parameters": [],
-        "security": [{ "Bearer": [] }],
-
-        "requestBody": {
-          "description": "Goal object",
-          "required": true,
-          "content":{
-            "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/UserGoal"
-                }
-              }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Successful operation",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/UserGoal"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad request (invalid request body)"
-          }
-        }
-      }
-    },
-    "/api/user/weight":{
-      "put": {
-        "tags": ["User"],
-        "summary": "User goal information",
-
-        "parameters": [],
-        "security": [{ "Bearer": [] }],
-
-        "requestBody": {
-          "description": "Weight object",
-          "required": true,
-          "content":{
-            "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/UserWeight"
-                }
-              }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Successful operation",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/UserWeight"
                 }
               }
             }
@@ -387,6 +279,115 @@
         }
       }   
     },
+    "/api/user/info":{
+      "patch": {
+        "tags": ["User"],
+        "summary": "User  information updated",
+
+        "parameters": [],
+        "security": [{ "Bearer": [] }],
+
+        "requestBody": {
+          "description": "User object",
+          "required": true,
+          "content":{
+            "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserInfo"
+                }
+              }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserInfo"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request (invalid request body)"
+          }
+        }
+      }
+    },
+    "/api/user/goal":{
+      "put": {
+        "tags": ["User"],
+        "summary": "User goal update",
+
+        "parameters": [],
+        "security": [{ "Bearer": [] }],
+
+        "requestBody": {
+          "description": "Goal object",
+          "required": true,
+          "content":{
+            "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserGoal"
+                }
+              }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserGoal"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request (invalid request body)"
+          }
+        }
+      }
+    },
+    "/api/user/weight":{
+      "put": {
+        "tags": ["User"],
+        "summary": "User weight update",
+
+        "parameters": [],
+        "security": [{ "Bearer": [] }],
+
+        "requestBody": {
+          "description": "Weight object",
+          "required": true,
+          "content":{
+            "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserWeight"
+                }
+              }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserWeight"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request (invalid request body)"
+          }
+        }
+      }
+    },
+
     "/api/user/food-intake":{
       "post": {
         "tags": ["User"],
