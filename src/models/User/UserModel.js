@@ -56,13 +56,16 @@ const userSchema = new Schema(
       type: Number,
     },
   },
-  { versionKey: false, timestamps: true }
+  {
+    versionKey: false,
+    timestamps: { createdAt: true, updatedAt: false },
+  }
 );
 
 // если поля обновляются, БМР обновляется автоматически
 userSchema.pre('save', function (next) {
-  const { goal, gender, height, weight, age, physicalActivityRatio, BMR } = this;
-  this.BMR = calculateBMR({ goal, gender, height, weight, age, physicalActivityRatio });
+  const { gender, height, weight, age, physicalActivityRatio, BMR } = this;
+  this.BMR = calculateBMR({ gender, height, weight, age, physicalActivityRatio });
   next();
 });
 

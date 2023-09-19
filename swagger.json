@@ -22,8 +22,8 @@
       "description":"User endpoints"
     },
     {
-      "name":"Recommended-food",
-      "description":"Recommended food endpoints"
+      "name":"FoodIntake",
+      "description":"Food endpoints"
     }
   ],
    "paths": {
@@ -497,20 +497,27 @@
         }
       }
     },
-    " /api/recommended-food":{
+    "/api/user/recomended-food":{
       "get": {
-        "tags": ["Recommended-food"],
+        "tags": ["FoodIntake"],
         "summary": "Recommended-food",
 
         "parameters": [],
 
-        "requestBody":{
-          "description": "Recommended-food",
-          "content":{}
+        "responses": {
+        "200": {
+          "description": "Successful operation",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RecommendedFoodResponse"
+              }
+            }
+          }
         }
       }
     }
-  },
+    },
   "components": {
       "schemas": {
       "RegistrationRequest": {
@@ -697,68 +704,51 @@
       "UserResponse":{
         "type":"object",
         "properties":{
-          "waterIntake":{
-            "type":"integer",
-            "example":1200
-          },
-          "caloriesIntake":{
-            "type":"integer",
-            "example":1200
-          },
-          "weight":{
-            "type":"integer",
-            "example":65
-          }
+          "waterIntake":{"type":"integer","example":1200},
+          "caloriesIntake":{"type":"integer","example":1200},
+          "weight":{"type":"integer","example":65}
         }
 
       },
       "UserGoal":{
         "type":"object",
         "required":true,
-        "properties":{
-          "goal":{
-            "type":"string",
-            "example":"Lose fat"
-          }
+        "properties":{"goal":{"type":"string","example":"Lose fat"}
         }
       },
       "UserWeight":{
         "type":"object",
         "required":true,
         "properties":{
-          "weight":{
-            "type":"integer",
-            "example":70
-          }
+          "weight":{"type":"integer","example":70}
         }
       },
       "FoodIntakeRequest":{
         "type":"object",
         "required": true,
         "properties":{
-          "mealName": {
-            "type":"string",
-            "example":"toast"
-          },
-          "mealType": {
-            "type":"string",
-            "example":"Lunch"
-          },
-          "carbohydrates": {
-            "type":"integer",
-            "example":45
-          },
-          "protein":{
-            "type":"integer",
-            "example":10
-          },
-          "fat":{
-            "type":"integer",
-            "example":110
-          },
-          "calories": {
-            "type":"integer",
-            "example":460
+          "mealName": {"type":"string", "example":"toast"},
+          "mealType": {"type":"string","example":"Lunch"},
+          "carbohydrates": {"type":"integer","example":45},
+          "protein":{"type":"integer","example":10},
+          "fat":{"type":"integer","example":110},
+          "calories": {"type":"integer","example":460}
+        }
+      },
+      "RecommendedFoodResponse":{
+        "type":"object",
+        "properties":{
+          "name":{"type":"string", "example":"Apples"},
+          "amount":{"type":"string", "example":"100 g"},
+          "img":{"type":"string","example":"https://res.cloudinary.com/dec1shvoo/image/upload/v1692479041/Your%20health/pngfind.com-apple-png-1037796_udjai9.png"},
+          "calories":{"type":"number","example":82},
+          "nutrition":{
+            "type":"object",
+            "properties":{
+              "carbohydrates":{"type":"number","example":14},
+              "protein":{"type":"number","example":0.3},
+              "fat":{"type":"number","example":0.2}
+            }
           }
         }
       }
@@ -771,4 +761,5 @@
         }
     }
   }
+}
 }
