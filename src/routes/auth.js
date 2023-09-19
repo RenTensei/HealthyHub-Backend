@@ -14,6 +14,7 @@ router.get('/current', authMiddleware, authController.current);
 
 router.get('/logout', authMiddleware, authController.logout);
 
+// router.post('/avatar', authMiddleware, uploadCloud.single('image'), hhhhh);
 router.patch('/avatar', authMiddleware, upload.single('avatar'), authController.avatar);
 
 module.exports = router;

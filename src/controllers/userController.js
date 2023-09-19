@@ -22,8 +22,8 @@ const updateUser = async (req, res) => {
 
   const updatedUser = await UserModel.findByIdAndUpdate(req.user._id, validatedBody, { new: true });
 
-  const { goal, gender, height, weight, age, physicalActivityRatio } = updatedUser;
-  validatedBody.BMR = calculateBMR({ goal, gender, height, weight, age, physicalActivityRatio });
+  const { gender, height, weight, age, physicalActivityRatio } = updatedUser;
+  validatedBody.BMR = calculateBMR({ gender, height, weight, age, physicalActivityRatio });
 
   const updatedBMRUser = await UserModel.findByIdAndUpdate(req.user._id, validatedBody, {
     new: true,
@@ -39,8 +39,8 @@ const updateUserGoal = async (req, res) => {
 
   const updatedUser = await UserModel.findByIdAndUpdate(req.user._id, validatedBody, { new: true });
 
-  const { goal, gender, height, weight, age, physicalActivityRatio } = updatedUser;
-  validatedBody.BMR = calculateBMR({ goal, gender, height, weight, age, physicalActivityRatio });
+  const { gender, height, weight, age, physicalActivityRatio } = updatedUser;
+  validatedBody.BMR = calculateBMR({ gender, height, weight, age, physicalActivityRatio });
 
   const updatedBMRUser = await UserModel.findByIdAndUpdate(req.user._id, validatedBody, {
     new: true,
@@ -55,8 +55,8 @@ const updateUserWeight = async (req, res) => {
 
   const updatedUser = await UserModel.findByIdAndUpdate(req.user._id, validatedBody, { new: true });
 
-  const { goal, gender, height, weight, age, physicalActivityRatio } = updatedUser;
-  validatedBody.BMR = calculateBMR({ goal, gender, height, weight, age, physicalActivityRatio });
+  const { gender, height, weight, age, physicalActivityRatio } = updatedUser;
+  validatedBody.BMR = calculateBMR({ gender, height, weight, age, physicalActivityRatio });
   const updatedBMRUser = await UserModel.findByIdAndUpdate(req.user._id, validatedBody, {
     new: true,
   });
