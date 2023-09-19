@@ -75,15 +75,17 @@ const signIn = async (req, res) => {
 const current = async (req, res) => {
   const { name, email, goal, gender, age, height, weight, physicalActivityRatio, BMR } = req.user;
   res.json({
-    name,
-    email,
-    goal,
-    gender,
-    age,
-    height,
-    weight,
-    physicalActivityRatio,
-    BMR,
+    user: {
+      name,
+      email,
+      goal,
+      gender,
+      age,
+      height,
+      weight,
+      physicalActivityRatio,
+      BMR,
+    },
   });
 };
 
