@@ -7,7 +7,7 @@ const router = Router();
 
 // router.get('/food-intake', authMiddleware, foodIntakeController.getAll);
 
-router.post('/food-intake', authMiddleware, foodIntakeController.create);
+router.post('/food-intake', authMiddleware, foodIntakeController.createMeal);
 router.get('/food-intake', authMiddleware, foodIntakeController.getDiaryFood);
 router.get('/recomended-food', authMiddleware, foodIntakeController.getRecommendedFood);
 

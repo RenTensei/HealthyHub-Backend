@@ -4,12 +4,7 @@ const { SaveFoodIntakeValidationSchema } = require('../models/FoodIntake/FoodInt
 const FoodIntakeModel = require('../models/FoodIntake/FoodIntakeModel');
 const FoodAllModel = require('../models/FoodIntake/RecomendedFoodModel');
 
-// const getAll = async (req, res) => {
-//   const foodIntakes = await FoodIntakeModel.find({ consumer: req.user._id });
-//   res.json(foodIntakes);
-// };
-
-const create = async (req, res) => {
+const createMeal = async (req, res) => {
   const validatedBody = SaveFoodIntakeValidationSchema.parse(req.body);
 
   const createdFoodIntake = await FoodIntakeModel.create({
@@ -44,8 +39,7 @@ const getRecommendedFood = async (req, res) => {
 };
 
 module.exports = {
-  // getAll: handlerWrapper(getAll),
-  create: handlerWrapper(create),
+  createMeal: handlerWrapper(createMeal),
   getDiaryFood: handlerWrapper(getDiaryFood),
   getRecommendedFood: handlerWrapper(getRecommendedFood),
 };
