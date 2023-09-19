@@ -12,6 +12,8 @@ router.post('/signin', authController.signIn);
 
 router.get('/current', authMiddleware, authController.current);
 
+router.put('/password', authMiddleware, authController.password);
+
 router.get('/logout', authMiddleware, authController.logout);
 
 // router.post('/avatar', authMiddleware, uploadCloud.single('image'), hhhhh);

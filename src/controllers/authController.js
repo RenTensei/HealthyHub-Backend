@@ -6,11 +6,7 @@ const path = require('path');
 
 const { handlerWrapper, HttpError, envVars } = require('../helpers');
 const UserModel = require('../models/User/UserModel');
-const {
-  SignUpValidationSchema,
-  SignInValidationSchema,
-  UpdateUserValidationSchema,
-} = require('../models/User/UserSchemas');
+const { SignUpValidationSchema, SignInValidationSchema } = require('../models/User/UserSchemas');
 
 // const { response } = require('../app');
 
@@ -89,6 +85,33 @@ const current = async (req, res) => {
   });
 };
 
+const password = async (req, res) => {
+  const validatedBody = SignInValidationSchema.parse(req.body);
+
+  const existingUser = await UserModel.findOne({ email: validatedBody.email });
+  if (!existingUser) throw new HttpError(401, 'Email or password is wrong!');
+
+  const newToken = jwt.sign({ id: existingUser._id }, envVars.JWT_SECRET, {
+    expiresIn: '24h',
+  });
+
+  const newHashedPassword = await bcrypt.hash(validatedBody.password, 10);
+
+  await UserModel.findByIdAndUpdate(
+    existingUser._id,
+    {
+      password: newHashedPassword,
+      token: newToken,
+    },
+    { new: true }
+  );
+
+  res.status(200).json({
+    message: 'password updated success',
+    token: newToken,
+  });
+};
+
 const logout = async (req, res) => {
   const updatedUser = await UserModel.findByIdAndUpdate(
     req.user._id,
@@ -130,6 +153,7 @@ module.exports = {
   signUp: handlerWrapper(signUp),
   signIn: handlerWrapper(signIn),
   current: handlerWrapper(current),
+  password: handlerWrapper(password),
   logout: handlerWrapper(logout),
   avatar: handlerWrapper(avatar),
 };
