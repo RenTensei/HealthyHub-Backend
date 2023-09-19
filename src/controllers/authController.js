@@ -124,6 +124,7 @@ const avatar = async (req, res) => {
   res.json({ avatarURL });
 };
 
+
 module.exports = {
   signUp: handlerWrapper(signUp),
   signIn: handlerWrapper(signIn),

@@ -35,6 +35,6 @@ const foodIntakeSchema = new Schema(
   { versionKey: false, timestamps: true }
 );
 
-const FoodIntakeModel = model('FoodIntake', foodIntakeSchema);
+const FoodIntakeModel = model('foodintakes', foodIntakeSchema);
 
 module.exports = FoodIntakeModel;

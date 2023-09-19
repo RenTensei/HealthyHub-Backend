@@ -56,7 +56,10 @@ const userSchema = new Schema(
       type: Number,
     },
   },
-  { versionKey: false, timestamps: true }
+  {
+    versionKey: false,
+    timestamps: { createdAt: true, updatedAt: false },
+  }
 );
 
 // если поля обновляются, БМР обновляется автоматически
