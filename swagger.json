@@ -199,7 +199,7 @@
           "content": {
             "multipart/form-data":{
               "schema":{
-                "$ref": "#/components/schemas/Employee"
+                "$ref": "#/components/schemas/Avatar"
               }
             }
           }
@@ -255,20 +255,28 @@
     "/api/user/statistics":{
       "get": {
         "tags": ["User"],
-        "summary": "User information",
+        "summary": "User statistics",
 
-        "parameters": [],
+        "parameters": [
+          {
+            "in":"query",
+            "name":"range",
+            "schema":{
+              "range":{"type":"string",
+              "example":"day"
+              }
+            }
+          }
+        ],
         "security": [{ "Bearer": [] }],
 
-        "requestBody": {
-        },
         "responses": {
           "200": {
             "description": "Successful operation",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/UserResponse"
+                  "$ref": "#/components/schemas/StatisticResponse"
                 }
               }
             }
@@ -517,7 +525,8 @@
         }
       }
     }
-    },
+    }
+  },
   "components": {
       "schemas": {
       "RegistrationRequest": {
@@ -651,62 +660,35 @@
       }
     
       },
-      "Employee":{
+      "Avatar":{
         "type":"object",
         "properties":{
           "name":{
             "type":"string",
             "format": "binary"
-          }
+         
         }
+      }
       },
       "UserInformations":{
         "type": "object",
-        "properties":{
-          "name":{
-            "type": "string",
-            "example":"username"
-          },
-          "email":{
-            "type":"string",
-            "format": "email"
-          },
-          "goal":{
-            "type":"string",
-            "example":"Lose fat"
-          },
-          "gender":{
-            "type":"string",
-            "example":"Female"
-          },
-          "age":{
-            "type":"integer",
-            "example":35
-          },
-          "height":{
-            "type":"integer",
-            "example":170
-          },
-          "weight":{
-            "type":"integer",
-            "example":65
-          },
-          "physicalActivityRatio":{
-            "type":"number",
-            "example":1.5
-          },
-          "bmr":{
-            "type":"number",
-            "example":1700
-          }
+        "properties":{"name":{"type": "string","example":"username"},
+          "email":{"type":"string", "format": "email"},
+          "goal":{"type":"string","example":"Lose fat"},
+          "gender":{"type":"string","example":"Female"},
+          "age":{"type":"integer","example":35},
+          "height":{"type":"integer","example":170},
+          "weight":{"type":"integer","example":65},
+          "physicalActivityRatio":{"type":"number","example":1.5},
+          "bmr":{"type":"number","example":1700}
         }
       },
-      "UserResponse":{
+      "StatisticResponse":{
         "type":"object",
         "properties":{
-          "waterIntake":{"type":"integer","example":1200},
-          "caloriesIntake":{"type":"integer","example":1200},
-          "weight":{"type":"integer","example":65}
+          "waterIntake":{"type":"number","example":1200},
+          "caloriesIntake":{"type":"number","example":1200},
+          "weight":{"type":"number","example":65}
         }
 
       },
@@ -753,13 +735,13 @@
         }
       }
     },
-    "securitySchemes": {
-        "Bearer": {
-          "type": "http",
-          "scheme": "bearer",
-          "bearerFormat": "JWT"
-        }
+      "securitySchemes": {
+      "Bearer": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
     }
-  }
 }
 }
+

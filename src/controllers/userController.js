@@ -1,4 +1,6 @@
 const { handlerWrapper } = require('../helpers');
+const FoodIntakeModel = require('../models/FoodIntake/FoodIntakeModel');
+const WaterIntakeModel = require('../models/WaterIntake/WaterIntakeModel');
 const UserModel = require('../models/User/UserModel');
 const {
   UpdateGoalValidationSchema,
@@ -10,8 +12,63 @@ const extractUpdatedFields = require('../utils/extractUpdatedFields');
 
 const statistics = async (req, res) => {
   // TODO calculate calories, water based on foodIntake
-  const caloriesIntake = 2100;
-  const waterIntake = 1200;
+
+  //Time endpoints
+  const currentData = new Date();
+  const todayStart = new Date(new Date().setHours(0, 0, 0, 0));
+  const beforeMonth = new Date(
+    new Date(new Date().setHours(0, 0, 0, 0)).setMonth(
+      new Date(new Date().setHours(0, 0, 0, 0)).getMonth() - 1
+    )
+  );
+  const beforeYear = new Date(
+    new Date(new Date().setHours(0, 0, 0, 0)).setFullYear(
+      new Date(new Date().setHours(0, 0, 0, 0)).getFullYear() - 1
+    )
+  );
+  //  Period selection
+  let startDate = todayStart;
+  const endDate = currentData;
+
+  const { range } = req.query;
+  if (range === 'month') {
+    startDate = beforeMonth;
+  } else if (range === 'year') {
+    startDate = beforeYear;
+  }
+  //----------------------------------------------------------------
+  const amountWater = await WaterIntakeModel.aggregate([
+    {
+      $match: {
+        consumer: req.user._id,
+        createdAt: { $gte: startDate, $lt: endDate },
+      },
+    },
+    {
+      $group: {
+        _id: 'Water',
+        total: { $sum: '$volume' },
+      },
+    },
+  ]);
+
+  const amountCalories = await FoodIntakeModel.aggregate([
+    {
+      $match: {
+        consumer: req.user._id,
+        createdAt: { $gte: startDate, $lt: endDate },
+      },
+    },
+    {
+      $group: {
+        _id: 'Calories',
+        total: { $sum: '$calories' },
+      },
+    },
+  ]);
+
+  const caloriesIntake = amountCalories[0].total;
+  const waterIntake = amountWater[0].total;
 
   res.json({ waterIntake, caloriesIntake, weight: req.user.weight });
 };
