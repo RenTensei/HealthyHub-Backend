@@ -1,5 +1,5 @@
 // The Basal Metabolic Rate (BMR) Calculator estimates your basal metabolic rate
-let k = 1;
+// const k = 1;
 const calculateBMR = ({ gender, height, weight, age, physicalActivityRatio }) => {
   const BMR =
     gender === 'Female'

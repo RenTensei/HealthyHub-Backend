@@ -1,7 +1,6 @@
 const { handlerWrapper } = require('../helpers');
-
-const { SaveFoodIntakeValidationSchema } = require('../models/FoodIntake/FoodIntakeSchema');
 const FoodIntakeModel = require('../models/FoodIntake/FoodIntakeModel');
+const { SaveFoodIntakeValidationSchema } = require('../models/FoodIntake/FoodIntakeSchema');
 const FoodAllModel = require('../models/FoodIntake/RecomendedFoodModel');
 
 const createMeal = async (req, res) => {

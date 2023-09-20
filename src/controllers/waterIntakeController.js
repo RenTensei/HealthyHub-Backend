@@ -1,7 +1,6 @@
 const { handlerWrapper } = require('../helpers');
-
-const { SaveWaterIntakeValidationSchema } = require('../models/WaterIntake/WaterIntakeSchema');
 const WaterIntakeModel = require('../models/WaterIntake/WaterIntakeModel');
+const { SaveWaterIntakeValidationSchema } = require('../models/WaterIntake/WaterIntakeSchema');
 
 const createDrink = async (req, res) => {
   const validatedBody = SaveWaterIntakeValidationSchema.parse(req.body);

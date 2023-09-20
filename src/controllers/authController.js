@@ -1,8 +1,9 @@
+const fs = require('node:fs/promises');
+const path = require('node:path');
+
 const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
-const fs = require('fs/promises');
 const Jimp = require('jimp');
-const path = require('path');
+const jwt = require('jsonwebtoken');
 
 const { handlerWrapper, HttpError, envVars } = require('../helpers');
 const UserModel = require('../models/User/UserModel');

@@ -5,7 +5,6 @@ const {
   UpdateUserValidationSchema,
   UpdateWeightValidationSchema,
 } = require('../models/User/UserSchemas');
-
 const calculateBMR = require('../utils/calculateBMR');
 const extractUpdatedFields = require('../utils/extractUpdatedFields');
 
