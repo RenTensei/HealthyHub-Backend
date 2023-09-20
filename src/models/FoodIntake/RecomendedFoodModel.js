@@ -1,5 +1,4 @@
 const { model, Schema } = require('mongoose');
-const { string } = require('zod');
 
 const RecomendedFoodSchema = new Schema({
   RecommendedFood: { type: String },

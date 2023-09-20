@@ -32,7 +32,10 @@ const foodIntakeSchema = new Schema(
       ref: 'User',
     },
   },
-  { versionKey: false, timestamps: true }
+  {
+    versionKey: false,
+    timestamps: { createdAt: true, updatedAt: false },
+  }
 );
 
 const FoodIntakeModel = model('FoodIntake', foodIntakeSchema);
