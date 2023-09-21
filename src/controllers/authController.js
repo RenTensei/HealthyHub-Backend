@@ -24,6 +24,13 @@ const signUp = async (req, res) => {
     password: hashedPassword,
   });
 
+  const token = jwt.sign({ id: newUser._id }, envVars.JWT_SECRET, {
+    expiresIn: '24h',
+  });
+
+  newUser.token = token;
+  await newUser.save();
+
   res.status(201).json({
     user: {
       name: newUser.name,
@@ -36,6 +43,7 @@ const signUp = async (req, res) => {
       physicalActivityRatio: newUser.physicalActivityRatio,
       BMR: newUser.BMR,
     },
+    token,
   });
 };
 
