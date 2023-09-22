@@ -1,19 +1,18 @@
 const { handlerWrapper } = require('../helpers');
 const FoodIntakeModel = require('../models/FoodIntake/FoodIntakeModel');
-const WaterIntakeModel = require('../models/WaterIntake/WaterIntakeModel');
 const UserModel = require('../models/User/UserModel');
 const {
   UpdateGoalValidationSchema,
   UpdateUserValidationSchema,
   UpdateWeightValidationSchema,
 } = require('../models/User/UserSchemas');
+const WaterIntakeModel = require('../models/WaterIntake/WaterIntakeModel');
+const WeightIntakeModel = require('../models/WeightIntake/WeightIntakeModel');
 const calculateBMR = require('../utils/calculateBMR');
 const extractUpdatedFields = require('../utils/extractUpdatedFields');
 
-const WeightIntakeModel = require('../models/WeightIntake/WeightIntakeModel');
-
-//Time endpoints
-//__________________________________________________________
+// Time endpoints
+// __________________________________________________________
 const currentData = new Date();
 const todayStart = new Date(new Date().setHours(0, 0, 0, 0));
 const beforeMonth = new Date(
@@ -29,7 +28,7 @@ const beforeYear = new Date(
 //  Period selection
 let startDate = todayStart;
 const endDate = currentData;
-//_______________________________
+// _______________________________
 
 const statistics = async (req, res) => {
   // TODO calculate calories, water based on foodIntake
