@@ -42,10 +42,17 @@ const UpdateWeightValidationSchema = z
   })
   .strict();
 
+const WatertValidationSchema = z
+  .object({
+    volume: z.number(),
+  })
+  .strict();
+
 module.exports = {
   SignUpValidationSchema,
   SignInValidationSchema,
   UpdateUserValidationSchema,
   UpdateGoalValidationSchema,
   UpdateWeightValidationSchema,
+  WatertValidationSchema,
 };

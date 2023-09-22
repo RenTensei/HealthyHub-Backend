@@ -8,6 +8,7 @@ const jwt = require('jsonwebtoken');
 const { handlerWrapper, HttpError, envVars } = require('../helpers');
 const UserModel = require('../models/User/UserModel');
 const { SignUpValidationSchema, SignInValidationSchema } = require('../models/User/UserSchemas');
+const WeightIntakeModel = require('../models/WeightIntake/WeightIntakeModel');
 
 // const { response } = require('../app');
 
@@ -22,6 +23,11 @@ const signUp = async (req, res) => {
   const newUser = await UserModel.create({
     ...validatedBody,
     password: hashedPassword,
+  });
+
+  await WeightIntakeModel.create({
+    weight: req.body.weight,
+    consumer: newUser._id,
   });
 
   res.status(201).json({

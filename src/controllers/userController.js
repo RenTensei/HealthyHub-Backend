@@ -10,26 +10,29 @@ const {
 const calculateBMR = require('../utils/calculateBMR');
 const extractUpdatedFields = require('../utils/extractUpdatedFields');
 
+const WeightIntakeModel = require('../models/WeightIntake/WeightIntakeModel');
+
+//Time endpoints
+//__________________________________________________________
+const currentData = new Date();
+const todayStart = new Date(new Date().setHours(0, 0, 0, 0));
+const beforeMonth = new Date(
+  new Date(new Date().setHours(0, 0, 0, 0)).setMonth(
+    new Date(new Date().setHours(0, 0, 0, 0)).getMonth() - 1
+  )
+);
+const beforeYear = new Date(
+  new Date(new Date().setHours(0, 0, 0, 0)).setFullYear(
+    new Date(new Date().setHours(0, 0, 0, 0)).getFullYear() - 1
+  )
+);
+//  Period selection
+let startDate = todayStart;
+const endDate = currentData;
+//_______________________________
+
 const statistics = async (req, res) => {
   // TODO calculate calories, water based on foodIntake
-
-  //Time endpoints
-  const currentData = new Date();
-  const todayStart = new Date(new Date().setHours(0, 0, 0, 0));
-  const beforeMonth = new Date(
-    new Date(new Date().setHours(0, 0, 0, 0)).setMonth(
-      new Date(new Date().setHours(0, 0, 0, 0)).getMonth() - 1
-    )
-  );
-  const beforeYear = new Date(
-    new Date(new Date().setHours(0, 0, 0, 0)).setFullYear(
-      new Date(new Date().setHours(0, 0, 0, 0)).getFullYear() - 1
-    )
-  );
-  //  Period selection
-  let startDate = todayStart;
-  const endDate = currentData;
-
   const { range } = req.query;
   if (range === 'month') {
     startDate = beforeMonth;
@@ -46,7 +49,7 @@ const statistics = async (req, res) => {
     },
     {
       $group: {
-        _id: 'Water',
+        _id: 'createdAt',
         total: { $sum: '$volume' },
       },
     },
@@ -67,8 +70,8 @@ const statistics = async (req, res) => {
     },
   ]);
 
-  const caloriesIntake = amountCalories[0].total;
-  const waterIntake = amountWater[0].total;
+  const waterIntake = amountWater.length === 0 ? 0 : amountWater[0].total;
+  const caloriesIntake = amountCalories.length === 0 ? 0 : amountCalories[0].total;
 
   res.json({ waterIntake, caloriesIntake, weight: req.user.weight });
 };
@@ -113,11 +116,36 @@ const updateUserWeight = async (req, res) => {
 
   const { gender, height, weight, age, physicalActivityRatio } = updatedUser;
   validatedBody.BMR = calculateBMR({ gender, height, weight, age, physicalActivityRatio });
+
   const updatedBMRUser = await UserModel.findByIdAndUpdate(req.user._id, validatedBody, {
     new: true,
   });
+  //
+  const todayWeight = await WeightIntakeModel.aggregate([
+    {
+      $match: {
+        consumer: req.user._id,
+        createdAt: { $gte: startDate, $lt: endDate },
+      },
+    },
+  ]);
+
+  const updateUser =
+    todayWeight.length === 0
+      ? await WeightIntakeModel.create({
+          weight: updatedBMRUser.weight,
+          consumer: req.user._id,
+        })
+      : await WeightIntakeModel.findOneAndUpdate(
+          todayWeight[0]._id,
+          { weight: updatedBMRUser.weight },
+          { new: true }
+        );
+
   extractUpdatedFields(validatedBody, updatedBMRUser);
-  res.json({ weight: updatedUser.weight });
+  res.json({
+    weight: updatedBMRUser.weight,
+  });
 };
 
 module.exports = {
