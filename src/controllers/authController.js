@@ -8,6 +8,7 @@ const jwt = require('jsonwebtoken');
 const { handlerWrapper, HttpError, envVars } = require('../helpers');
 const UserModel = require('../models/User/UserModel');
 const { SignUpValidationSchema, SignInValidationSchema } = require('../models/User/UserSchemas');
+const WeightIntakeModel = require('../models/WeightIntake/WeightIntakeModel');
 
 // const { response } = require('../app');
 
@@ -24,6 +25,18 @@ const signUp = async (req, res) => {
     password: hashedPassword,
   });
 
+  await WeightIntakeModel.create({
+    weight: req.body.weight,
+    consumer: newUser._id,
+  });
+
+  const token = jwt.sign({ id: newUser._id }, envVars.JWT_SECRET, {
+    expiresIn: '24h',
+  });
+
+  newUser.token = token;
+  await newUser.save();
+
   res.status(201).json({
     user: {
       name: newUser.name,
@@ -36,6 +49,7 @@ const signUp = async (req, res) => {
       physicalActivityRatio: newUser.physicalActivityRatio,
       BMR: newUser.BMR,
     },
+    token,
   });
 };
 
