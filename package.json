@@ -35,5 +35,8 @@
     "eslint-plugin-unicorn": "^48.0.1",
     "nodemon": "^3.0.1",
     "prettier": "^3.0.3"
+  },
+  "engines": {
+    "node": ">=16"
   }
 }
