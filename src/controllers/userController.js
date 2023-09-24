@@ -79,7 +79,7 @@ const statistics = async (req, res) => {
 const updateUser = async (req, res) => {
   // parseStringPropsToNums чтоб спарсить числа из стринговых значений (FormData)
   const parsedBody = parseStringPropsToNums(req.body);
-  if (req.file.path) Object.assign(parsedBody, { avatarURL: req.file.path });
+  if (req.file && req.file.path) Object.assign(parsedBody, { avatarURL: req.file.path });
 
   console.log(parsedBody);
 
