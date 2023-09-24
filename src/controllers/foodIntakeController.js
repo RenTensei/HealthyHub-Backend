@@ -2,6 +2,7 @@ const { handlerWrapper } = require('../helpers');
 const FoodIntakeModel = require('../models/FoodIntake/FoodIntakeModel');
 const { SaveFoodIntakeValidationSchema } = require('../models/FoodIntake/FoodIntakeSchema');
 const FoodAllModel = require('../models/FoodIntake/RecomendedFoodModel');
+const WaterIntakeModel = require('../models/WaterIntake/WaterIntakeModel');
 
 const createMeal = async (req, res) => {
   const validatedBody = SaveFoodIntakeValidationSchema.parse(req.body);
@@ -16,19 +17,37 @@ const createMeal = async (req, res) => {
 
 const getDiaryFood = async (req, res) => {
   const currentData = new Date();
-  const todayStart = new Date(new Date().setHours(0, 0, 0, 0));
-  // const todayEnd = new Date(new Date().setHours(23, 59, 59, 999));
+  const todayStart = new Date();
+  todayStart.setHours(0, 0, 0, 0);
 
-  const result = await FoodIntakeModel.find({
+  const foodIntakes = await FoodIntakeModel.find({
     consumer: req.user._id,
     createdAt: {
       $gte: todayStart,
       $lte: currentData,
-      // $lte: todayEnd,
     },
-  }).exec();
+  });
 
-  res.json(result);
+  const waterIntake = await WaterIntakeModel.aggregate([
+    {
+      $match: {
+        consumer: req.user._id,
+        createdAt: {
+          $gte: todayStart,
+          $lte: currentData,
+        },
+      },
+    },
+    {
+      $group: { _id: null, totalVolume: { $sum: '$volume' } },
+    },
+    { $project: { _id: 0, totalVolume: 1 } },
+  ]);
+
+  res.json({
+    items: foodIntakes,
+    waterIntake: waterIntake.length > 0 ? waterIntake[0].totalVolume : 0,
+  });
 };
 
 const getRecommendedFood = async (req, res) => {
