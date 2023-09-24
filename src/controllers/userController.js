@@ -10,6 +10,7 @@ const WaterIntakeModel = require('../models/WaterIntake/WaterIntakeModel');
 const WeightIntakeModel = require('../models/WeightIntake/WeightIntakeModel');
 const calculateBMR = require('../utils/calculateBMR');
 const extractUpdatedFields = require('../utils/extractUpdatedFields');
+const parseStringPropsToNums = require('../utils/parseStringPropsToNums');
 
 // Time endpoints
 // __________________________________________________________
@@ -76,7 +77,13 @@ const statistics = async (req, res) => {
 };
 
 const updateUser = async (req, res) => {
-  const validatedBody = UpdateUserValidationSchema.parse(req.body);
+  // parseStringPropsToNums чтоб спарсить числа из стринговых значений (FormData)
+  const parsedBody = parseStringPropsToNums(req.body);
+  if (req.file.path) Object.assign(parsedBody, { avatarURL: req.file.path });
+
+  console.log(parsedBody);
+
+  const validatedBody = UpdateUserValidationSchema.parse(parsedBody);
 
   const updatedUser = await UserModel.findByIdAndUpdate(req.user._id, validatedBody, { new: true });
 

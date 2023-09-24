@@ -18,7 +18,8 @@ const userSchema = new Schema(
     },
     avatarURL: {
       type: String,
-      default: null,
+      default:
+        'https://res.cloudinary.com/dz8c8nfqr/image/upload/v1695548987/healthuhub-avatars/default-avatar_jfpabp.jpg',
     },
     name: {
       type: String,

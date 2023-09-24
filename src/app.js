@@ -51,7 +51,7 @@ app.use((err, _req, res, _next) => {
     return res.status(401).json({ message: 'Not authorized' });
   }
 
-  console.log(err.message);
+  console.log(err);
 
   res.status(500).json({ message: 'Internal Server Error. Try again later!' });
 });

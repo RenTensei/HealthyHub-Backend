@@ -21,9 +21,11 @@ const SignInValidationSchema = z.object({
 const UpdateUserValidationSchema = z
   .object({
     name: z.string().min(3).optional(),
+    avatarURL: z.string().url().optional(),
     gender: z.enum(['Male', 'Female']).optional(),
     goal: z.enum(['Lose fat', 'Maintain', 'Gain Muscle']).optional(),
     age: z.number().int().optional(),
+    weight: z.number().min(40).max(170).optional(),
     height: z.number().min(140).max(230).optional(),
     physicalActivityRatio: z.number().min(1.2).max(2.5).optional(),
   })

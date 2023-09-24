@@ -47,6 +47,7 @@ const signUp = async (req, res) => {
       height: newUser.height,
       weight: newUser.weight,
       physicalActivityRatio: newUser.physicalActivityRatio,
+      avatarURL: newUser.avatarURL,
       BMR: newUser.BMR,
     },
     token,
@@ -78,13 +79,15 @@ const signIn = async (req, res) => {
       height: updatedUser.height,
       weight: updatedUser.weight,
       physicalActivityRatio: updatedUser.physicalActivityRatio,
+      avatarURL: updatedUser.avatarURL,
       BMR: updatedUser.BMR,
     },
   });
 };
 
 const current = async (req, res) => {
-  const { name, email, goal, gender, age, height, weight, physicalActivityRatio, BMR } = req.user;
+  const { name, email, goal, gender, age, height, weight, physicalActivityRatio, avatarURL, BMR } =
+    req.user;
   res.json({
     user: {
       name,
@@ -95,6 +98,7 @@ const current = async (req, res) => {
       height,
       weight,
       physicalActivityRatio,
+      avatarURL,
       BMR,
     },
   });

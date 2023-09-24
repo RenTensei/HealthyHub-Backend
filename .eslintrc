@@ -37,6 +37,7 @@
     "no-unused-vars": ["warn", { "argsIgnorePattern": "_" }],
     "no-underscore-dangle": "off",
     "node/no-unsupported-features/es-syntax": ["warn", { "version": ">=12.0.0" }],
-    "dot-notation": "off"
+    "dot-notation": "off",
+    "node/no-unsupported-features/es-builtins": "off"
   }
 }
