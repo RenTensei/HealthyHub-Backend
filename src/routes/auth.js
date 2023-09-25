@@ -2,7 +2,7 @@ const { Router } = require('express');
 
 const authController = require('../controllers/authController');
 const authMiddleware = require('../middlewares/auth.middleware');
-const upload = require('../middlewares/uploadfile');
+// const upload = require('../middlewares/uploadfile');
 
 const router = Router();
 
@@ -17,6 +17,6 @@ router.put('/password', authMiddleware, authController.password);
 router.get('/logout', authMiddleware, authController.logout);
 
 // router.post('/avatar', authMiddleware, uploadCloud.single('image'), hhhhh);
-router.patch('/avatar', authMiddleware, upload.single('avatar'), authController.avatar);
+// router.patch('/avatar', authMiddleware, upload.single('avatar'), authController.avatar);
 
 module.exports = router;

@@ -10,8 +10,6 @@ const UserModel = require('../models/User/UserModel');
 const { SignUpValidationSchema, SignInValidationSchema } = require('../models/User/UserSchemas');
 const WeightIntakeModel = require('../models/WeightIntake/WeightIntakeModel');
 
-// const { response } = require('../app');
-
 const signUp = async (req, res) => {
   const validatedBody = SignUpValidationSchema.parse(req.body);
 
@@ -145,28 +143,28 @@ const logout = async (req, res) => {
   res.status(204).end();
 };
 
-const avatar = async (req, res) => {
-  // adress  public/avatars  folder
-  const avatarsDir = path.join(__dirname, '../', 'public', 'avatars');
-  const { path: tempUpload, originalname } = req.file;
+// const avatar = async (req, res) => {
+//   // adress  public/avatars  folder
+//   const avatarsDir = path.join(__dirname, '../', 'public', 'avatars');
+//   const { path: tempUpload, originalname } = req.file;
 
-  const { _id } = req.user;
+//   const { _id } = req.user;
 
-  const filename = `${_id}_${originalname}`;
+//   const filename = `${_id}_${originalname}`;
 
-  const resultUpload = path.join(avatarsDir, filename);
+//   const resultUpload = path.join(avatarsDir, filename);
 
-  await fs.rename(tempUpload, resultUpload);
+//   await fs.rename(tempUpload, resultUpload);
 
-  await Jimp.read(resultUpload)
-    .then(image => image.resize(250, 250).write(resultUpload))
-    .catch(error => console.error(error));
+//   await Jimp.read(resultUpload)
+//     .then(image => image.resize(250, 250).write(resultUpload))
+//     .catch(error => console.error(error));
 
-  const avatarURL = path.join('avatars', filename);
-  await UserModel.findByIdAndUpdate(_id, { avatarURL });
+//   const avatarURL = path.join('avatars', filename);
+//   await UserModel.findByIdAndUpdate(_id, { avatarURL });
 
-  res.json({ avatarURL });
-};
+//   res.json({ avatarURL });
+// };
 
 module.exports = {
   signUp: handlerWrapper(signUp),
@@ -174,5 +172,5 @@ module.exports = {
   current: handlerWrapper(current),
   password: handlerWrapper(password),
   logout: handlerWrapper(logout),
-  avatar: handlerWrapper(avatar),
+  // avatar: handlerWrapper(avatar),
 };

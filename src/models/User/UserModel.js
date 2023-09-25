@@ -65,7 +65,7 @@ const userSchema = new Schema(
 
 // если поля обновляются, БМР обновляется автоматически
 userSchema.pre('save', function (next) {
-  const { gender, height, weight, age, physicalActivityRatio, BMR } = this;
+  const { gender, height, weight, age, physicalActivityRatio } = this;
   this.BMR = calculateBMR({ gender, height, weight, age, physicalActivityRatio });
   next();
 });
