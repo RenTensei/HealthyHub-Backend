@@ -12,68 +12,242 @@ const calculateBMR = require('../utils/calculateBMR');
 const extractUpdatedFields = require('../utils/extractUpdatedFields');
 const parseStringPropsToNums = require('../utils/parseStringPropsToNums');
 
-// Time endpoints
-// __________________________________________________________
-const currentData = new Date();
-const todayStart = new Date(new Date().setHours(0, 0, 0, 0));
-const beforeMonth = new Date(
-  new Date(new Date().setHours(0, 0, 0, 0)).setMonth(
-    new Date(new Date().setHours(0, 0, 0, 0)).getMonth() - 1
-  )
-);
-const beforeYear = new Date(
-  new Date(new Date().setHours(0, 0, 0, 0)).setFullYear(
-    new Date(new Date().setHours(0, 0, 0, 0)).getFullYear() - 1
-  )
-);
-//  Period selection
-let startDate = todayStart;
-const endDate = currentData;
-// _______________________________
-
 const statistics = async (req, res) => {
   // TODO calculate calories, water based on foodIntake
+  // Time endpoints
+  // __________________________________________________________
+  const currentData = new Date();
+  const todayStart = new Date(new Date().setHours(0, 0, 0, 0));
+  const beforeMonth = new Date(
+    new Date(new Date().setHours(0, 0, 0, 0)).setMonth(
+      new Date(new Date().setHours(0, 0, 0, 0)).getMonth() - 1
+    )
+  );
+  const beforeYear = new Date(
+    new Date(new Date().setHours(0, 0, 0, 0)).setFullYear(
+      new Date(new Date().setHours(0, 0, 0, 0)).getFullYear() - 1
+    )
+  );
+  //  Period selection
+  let startDate = todayStart;
+  const endDate = currentData;
+  // _______________________________
+
   const { range } = req.query;
-  if (range === 'month') {
+  if (!range) {
+    const amountWater = await WaterIntakeModel.aggregate([
+      {
+        $match: {
+          consumer: req.user._id,
+          createdAt: { $gte: startDate, $lt: endDate },
+        },
+      },
+      { $sort: { createdAt: 1 } },
+      {
+        $group: {
+          _id: {
+            day: { $dayOfMonth: '$createdAt' },
+          },
+          total: { $sum: '$volume' },
+        },
+      },
+    ]);
+    const amountCalories = await FoodIntakeModel.aggregate([
+      {
+        $match: {
+          consumer: req.user._id,
+          createdAt: { $gte: startDate, $lt: endDate },
+        },
+      },
+      {
+        $group: {
+          _id: {
+            day: { $dayOfMonth: '$createdAt' },
+          },
+          total: { $sum: '$calories' },
+        },
+      },
+    ]);
+
+    const waterIntake = amountWater.length === 0 ? 0 : amountWater[0].total;
+    const caloriesIntake = amountCalories.length === 0 ? 0 : amountCalories[0].total;
+
+    res.json({
+      water: waterIntake,
+      calories: caloriesIntake,
+      weight: req.user.weight,
+    });
+  } else if (range === 'month') {
     startDate = beforeMonth;
+    // get to Month
+    const amountWater = await WaterIntakeModel.aggregate([
+      {
+        $match: {
+          consumer: req.user._id,
+          createdAt: { $gte: startDate, $lt: endDate },
+        },
+      },
+      { $sort: { createdAt: 1 } },
+      {
+        $group: {
+          _id: {
+            year: { $year: '$createdAt' },
+            month: { $month: '$createdAt' },
+            day: { $dayOfMonth: '$createdAt' },
+          },
+          water: { $sum: '$volume' },
+        },
+      },
+      { $sort: { _id: 1 } },
+    ]);
+    const amountCalories = await FoodIntakeModel.aggregate([
+      {
+        $match: {
+          consumer: req.user._id,
+          createdAt: { $gte: startDate, $lt: endDate },
+        },
+      },
+      {
+        $group: {
+          _id: {
+            year: { $year: '$createdAt' },
+            month: { $month: '$createdAt' },
+            day: { $dayOfMonth: '$createdAt' },
+          },
+          calories: { $sum: '$calories' },
+        },
+      },
+      { $sort: { _id: 1 } },
+    ]);
+    const amountWeight = await WeightIntakeModel.aggregate([
+      {
+        $match: {
+          consumer: req.user._id,
+          createdAt: { $gte: startDate, $lt: endDate },
+        },
+      },
+      {
+        $group: {
+          _id: {
+            year: { $year: '$createdAt' },
+            month: { $month: '$createdAt' },
+            day: { $dayOfMonth: '$createdAt' },
+          },
+          weight: { $sum: '$weight' },
+        },
+      },
+      { $sort: { _id: 1 } },
+    ]);
+
+    res.json({
+      monthlyStatistics: {
+        amountWater,
+        amountCalories,
+        amountWeight,
+      },
+    });
   } else if (range === 'year') {
     startDate = beforeYear;
+    // get to Year
+    const amountWater = await WaterIntakeModel.aggregate([
+      {
+        $match: {
+          consumer: req.user._id,
+          createdAt: { $gte: startDate, $lt: endDate },
+        },
+      },
+      { $sort: { createdAt: 1 } },
+      {
+        $group: {
+          _id: {
+            year: { $year: '$createdAt' },
+            month: { $month: '$createdAt' },
+            day: { $dayOfMonth: '$createdAt' },
+          },
+          totalDay: { $sum: '$volume' },
+        },
+      },
+      { $sort: { _id: 1 } },
+      {
+        $group: {
+          _id: {
+            year: '$_id.year',
+            month: '$_id.month',
+          },
+          avgMonth: { $avg: '$totalDay' },
+        },
+      },
+
+      { $sort: { _id: 1 } },
+    ]);
+    const amountCalories = await FoodIntakeModel.aggregate([
+      {
+        $match: {
+          consumer: req.user._id,
+          createdAt: { $gte: startDate, $lt: endDate },
+        },
+      },
+      {
+        $group: {
+          _id: {
+            year: { $year: '$createdAt' },
+            month: { $month: '$createdAt' },
+            day: { $dayOfMonth: '$createdAt' },
+          },
+          totalDay: { $sum: '$calories' },
+        },
+      },
+      { $sort: { _id: 1 } },
+      {
+        $group: {
+          _id: {
+            year: '$_id.year',
+            month: '$_id.month',
+          },
+          avgMonth: { $avg: '$totalDay' },
+        },
+      },
+
+      { $sort: { _id: 1 } },
+    ]);
+    const amountWeight = await WeightIntakeModel.aggregate([
+      {
+        $match: {
+          consumer: req.user._id,
+          createdAt: { $gte: startDate, $lt: endDate },
+        },
+      },
+      {
+        $group: {
+          _id: {
+            year: { $year: '$createdAt' },
+            month: { $month: '$createdAt' },
+            day: { $dayOfMonth: '$createdAt' },
+          },
+          totalDay: { $sum: '$weight' },
+        },
+      },
+      { $sort: { _id: 1 } },
+      {
+        $group: {
+          _id: {
+            year: '$_id.year',
+            month: '$_id.month',
+          },
+          avgMonth: { $avg: '$totalDay' },
+        },
+      },
+
+      { $sort: { _id: 1 } },
+    ]);
+    res.json({
+      yearStatistics: {
+        amountWater,
+        amountCalories,
+        amountWeight,
+      },
+    });
   }
-  //----------------------------------------------------------------
-  const amountWater = await WaterIntakeModel.aggregate([
-    {
-      $match: {
-        consumer: req.user._id,
-        createdAt: { $gte: startDate, $lt: endDate },
-      },
-    },
-    {
-      $group: {
-        _id: 'createdAt',
-        total: { $sum: '$volume' },
-      },
-    },
-  ]);
-
-  const amountCalories = await FoodIntakeModel.aggregate([
-    {
-      $match: {
-        consumer: req.user._id,
-        createdAt: { $gte: startDate, $lt: endDate },
-      },
-    },
-    {
-      $group: {
-        _id: 'Calories',
-        total: { $sum: '$calories' },
-      },
-    },
-  ]);
-
-  const waterIntake = amountWater.length === 0 ? 0 : amountWater[0].total;
-  const caloriesIntake = amountCalories.length === 0 ? 0 : amountCalories[0].total;
-
-  res.json({ waterIntake, caloriesIntake, weight: req.user.weight });
 };
 
 const updateUser = async (req, res) => {
@@ -95,7 +269,6 @@ const updateUser = async (req, res) => {
   });
   const updatedFields = extractUpdatedFields(validatedBody, updatedBMRUser);
 
-  // res.json({ user: { ...updatedFields } });
   res.json(updatedFields);
 };
 
@@ -126,27 +299,32 @@ const updateUserWeight = async (req, res) => {
   const updatedBMRUser = await UserModel.findByIdAndUpdate(req.user._id, validatedBody, {
     new: true,
   });
-  //
+  //_________________________
+  const currentData = new Date();
+  const todayStart = new Date(new Date().setHours(0, 0, 0, 0));
+  //-------------------------
+
   const todayWeight = await WeightIntakeModel.aggregate([
     {
       $match: {
         consumer: req.user._id,
-        createdAt: { $gte: startDate, $lt: endDate },
+        createdAt: { $gte: todayStart, $lt: currentData },
       },
     },
   ]);
 
-  const updateUser =
-    todayWeight.length === 0
-      ? await WeightIntakeModel.create({
-          weight: updatedBMRUser.weight,
-          consumer: req.user._id,
-        })
-      : await WeightIntakeModel.findOneAndUpdate(
-          todayWeight[0]._id,
-          { weight: updatedBMRUser.weight },
-          { new: true }
-        );
+  if (todayWeight.length === 0) {
+    await WeightIntakeModel.create({
+      weight: updatedBMRUser.weight,
+      consumer: req.user._id,
+    });
+  } else {
+    await WeightIntakeModel.findOneAndUpdate(
+      todayWeight[0]._id,
+      { weight: updatedBMRUser.weight },
+      { new: true }
+    );
+  }
 
   extractUpdatedFields(validatedBody, updatedBMRUser);
   res.json({
