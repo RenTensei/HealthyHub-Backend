@@ -31,6 +31,16 @@ const getDiaryFood = async (req, res) => {
   res.json(result);
 };
 
+const putDiaryFood = async (req, res) => {
+  const validatedBody = SaveFoodIntakeValidationSchema.parse(req.body);
+  const { id } = req.params;
+  console.log(id);
+  console.log(validatedBody);
+  await FoodIntakeModel.findByIdAndUpdate(id, validatedBody, { new: true });
+
+  res.json(validatedBody);
+};
+
 const getRecommendedFood = async (req, res) => {
   const result = await FoodAllModel.find({}, { _id: 0 });
 
@@ -40,5 +50,6 @@ const getRecommendedFood = async (req, res) => {
 module.exports = {
   createMeal: handlerWrapper(createMeal),
   getDiaryFood: handlerWrapper(getDiaryFood),
+  putDiaryFood: handlerWrapper(putDiaryFood),
   getRecommendedFood: handlerWrapper(getRecommendedFood),
 };

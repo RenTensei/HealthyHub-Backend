@@ -9,6 +9,7 @@ const router = Router();
 
 router.post('/food-intake', authMiddleware, foodIntakeController.createMeal);
 router.get('/food-intake', authMiddleware, foodIntakeController.getDiaryFood);
+router.put('/food-intake/:id', authMiddleware, foodIntakeController.putDiaryFood);
 router.get('/recomended-food', authMiddleware, foodIntakeController.getRecommendedFood);
 
 module.exports = router;
