@@ -1,8 +1,8 @@
-const fs = require('node:fs/promises');
-const path = require('node:path');
+// const fs = require('node:fs/promises');
+// const path = require('node:path');
 
 const bcrypt = require('bcryptjs');
-const Jimp = require('jimp');
+// const Jimp = require('jimp');
 const jwt = require('jsonwebtoken');
 
 const { handlerWrapper, HttpError, envVars } = require('../helpers');
@@ -86,6 +86,26 @@ const signIn = async (req, res) => {
 const current = async (req, res) => {
   const { name, email, goal, gender, age, height, weight, physicalActivityRatio, avatarURL, BMR } =
     req.user;
+  // ------- при отсутствии текущей записи в коллекции Weight  - create
+  const todayWeight = await WeightIntakeModel.aggregate([
+    {
+      $match: {
+        consumer: req.user._id,
+        createdAt: {
+          $gte: new Date(new Date().setHours(0, 0, 0, 0)),
+          $lt: new Date(),
+        },
+      },
+    },
+  ]);
+
+  if (todayWeight.length === 0) {
+    await WeightIntakeModel.create({
+      weight,
+      consumer: req.user._id,
+    });
+  }
+  //------------
   res.json({
     user: {
       name,
