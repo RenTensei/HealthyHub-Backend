@@ -6,6 +6,8 @@ const authMiddleware = require('../middlewares/auth.middleware');
 
 const router = Router();
 
+router.post('/email', authController.checkEmail);
+
 router.post('/signup', authController.signUp);
 
 router.post('/signin', authController.signIn);
@@ -14,7 +16,7 @@ router.get('/current', authMiddleware, authController.current);
 
 router.put('/password', authMiddleware, authController.password);
 
-router.get('/logout', authMiddleware, authController.logout);
+router.post('/logout', authMiddleware, authController.logout);
 
 // router.post('/avatar', authMiddleware, uploadCloud.single('image'), hhhhh);
 // router.patch('/avatar', authMiddleware, upload.single('avatar'), authController.avatar);

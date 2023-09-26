@@ -7,8 +7,21 @@ const jwt = require('jsonwebtoken');
 
 const { handlerWrapper, HttpError, envVars } = require('../helpers');
 const UserModel = require('../models/User/UserModel');
-const { SignUpValidationSchema, SignInValidationSchema } = require('../models/User/UserSchemas');
+const {
+  SignUpValidationSchema,
+  SignInValidationSchema,
+  emailValidationSchema,
+} = require('../models/User/UserSchemas');
 const WeightIntakeModel = require('../models/WeightIntake/WeightIntakeModel');
+
+const checkEmail = async (req, res) => {
+  const validatedBody = emailValidationSchema.parse(req.body);
+
+  const existingUserEmail = await UserModel.findOne({ email: validatedBody.email });
+  if (existingUserEmail) throw new HttpError(409, 'Email already in use!');
+
+  res.status(200).end();
+};
 
 const signUp = async (req, res) => {
   const validatedBody = SignUpValidationSchema.parse(req.body);
@@ -187,6 +200,7 @@ const logout = async (req, res) => {
 // };
 
 module.exports = {
+  checkEmail: handlerWrapper(checkEmail),
   signUp: handlerWrapper(signUp),
   signIn: handlerWrapper(signIn),
   current: handlerWrapper(current),
