@@ -1,11 +1,7 @@
 const { handlerWrapper } = require('../helpers');
 const FoodIntakeModel = require('../models/FoodIntake/FoodIntakeModel');
 const UserModel = require('../models/User/UserModel');
-const {
-  UpdateGoalValidationSchema,
-  UpdateUserValidationSchema,
-  UpdateWeightValidationSchema,
-} = require('../models/User/UserSchemas');
+const { UpdateUserValidationSchema } = require('../models/User/UserSchemas');
 const WaterIntakeModel = require('../models/WaterIntake/WaterIntakeModel');
 const WeightIntakeModel = require('../models/WeightIntake/WeightIntakeModel');
 const calculateBMR = require('../utils/calculateBMR');
@@ -42,13 +38,13 @@ const statistics = async (req, res) => {
           createdAt: { $gte: startDate, $lt: endDate },
         },
       },
-      { $sort: { createdAt: 1 } },
       {
         $group: {
           _id: {
             day: { $dayOfMonth: '$createdAt' },
           },
           total: { $sum: '$volume' },
+          // count: { $count: 1 },
         },
       },
     ]);
@@ -80,7 +76,7 @@ const statistics = async (req, res) => {
   } else if (range === 'month') {
     startDate = beforeMonth;
     // get to Month
-    const amountWater = await WaterIntakeModel.aggregate([
+    const water = await WaterIntakeModel.aggregate([
       {
         $match: {
           consumer: req.user._id,
@@ -100,7 +96,7 @@ const statistics = async (req, res) => {
       },
       { $sort: { _id: 1 } },
     ]);
-    const amountCalories = await FoodIntakeModel.aggregate([
+    const calories = await FoodIntakeModel.aggregate([
       {
         $match: {
           consumer: req.user._id,
@@ -119,7 +115,7 @@ const statistics = async (req, res) => {
       },
       { $sort: { _id: 1 } },
     ]);
-    const amountWeight = await WeightIntakeModel.aggregate([
+    const weight = await WeightIntakeModel.aggregate([
       {
         $match: {
           consumer: req.user._id,
@@ -140,16 +136,14 @@ const statistics = async (req, res) => {
     ]);
 
     res.json({
-      monthlyStatistics: {
-        amountWater,
-        amountCalories,
-        amountWeight,
-      },
+      water,
+      calories,
+      weight,
     });
   } else if (range === 'year') {
     startDate = beforeYear;
     // get to Year
-    const amountWater = await WaterIntakeModel.aggregate([
+    const water = await WaterIntakeModel.aggregate([
       {
         $match: {
           consumer: req.user._id,
@@ -180,7 +174,7 @@ const statistics = async (req, res) => {
 
       { $sort: { _id: 1 } },
     ]);
-    const amountCalories = await FoodIntakeModel.aggregate([
+    const calories = await FoodIntakeModel.aggregate([
       {
         $match: {
           consumer: req.user._id,
@@ -210,7 +204,7 @@ const statistics = async (req, res) => {
 
       { $sort: { _id: 1 } },
     ]);
-    const amountWeight = await WeightIntakeModel.aggregate([
+    const weight = await WeightIntakeModel.aggregate([
       {
         $match: {
           consumer: req.user._id,
@@ -241,11 +235,9 @@ const statistics = async (req, res) => {
       { $sort: { _id: 1 } },
     ]);
     res.json({
-      yearStatistics: {
-        amountWater,
-        amountCalories,
-        amountWeight,
-      },
+      water,
+      calories,
+      weight,
     });
   }
 };
@@ -272,69 +264,69 @@ const updateUser = async (req, res) => {
   res.json(updatedFields);
 };
 
-const updateUserGoal = async (req, res) => {
-  const validatedBody = UpdateGoalValidationSchema.parse(req.body);
+// const updateUserGoal = async (req, res) => {
+//   const validatedBody = UpdateGoalValidationSchema.parse(req.body);
 
-  const updatedUser = await UserModel.findByIdAndUpdate(req.user._id, validatedBody, { new: true });
+//   const updatedUser = await UserModel.findByIdAndUpdate(req.user._id, validatedBody, { new: true });
 
-  const { gender, height, weight, age, physicalActivityRatio } = updatedUser;
-  validatedBody.BMR = calculateBMR({ gender, height, weight, age, physicalActivityRatio });
+//   const { gender, height, weight, age, physicalActivityRatio } = updatedUser;
+//   validatedBody.BMR = calculateBMR({ gender, height, weight, age, physicalActivityRatio });
 
-  const updatedBMRUser = await UserModel.findByIdAndUpdate(req.user._id, validatedBody, {
-    new: true,
-  });
+//   const updatedBMRUser = await UserModel.findByIdAndUpdate(req.user._id, validatedBody, {
+//     new: true,
+//   });
 
-  extractUpdatedFields(validatedBody, updatedBMRUser);
-  res.json({ goal: updatedUser.goal });
-};
+//   extractUpdatedFields(validatedBody, updatedBMRUser);
+//   res.json({ goal: updatedUser.goal });
+// };
 
-const updateUserWeight = async (req, res) => {
-  const validatedBody = UpdateWeightValidationSchema.parse(req.body);
+// const updateUserWeight = async (req, res) => {
+//   const validatedBody = UpdateWeightValidationSchema.parse(req.body);
 
-  const updatedUser = await UserModel.findByIdAndUpdate(req.user._id, validatedBody, { new: true });
+//   const updatedUser = await UserModel.findByIdAndUpdate(req.user._id, validatedBody, { new: true });
 
-  const { gender, height, weight, age, physicalActivityRatio } = updatedUser;
-  validatedBody.BMR = calculateBMR({ gender, height, weight, age, physicalActivityRatio });
+//   const { gender, height, weight, age, physicalActivityRatio } = updatedUser;
+//   validatedBody.BMR = calculateBMR({ gender, height, weight, age, physicalActivityRatio });
 
-  const updatedBMRUser = await UserModel.findByIdAndUpdate(req.user._id, validatedBody, {
-    new: true,
-  });
-  // _________________________
-  const currentData = new Date();
-  const todayStart = new Date(new Date().setHours(0, 0, 0, 0));
-  //-------------------------
+//   const updatedBMRUser = await UserModel.findByIdAndUpdate(req.user._id, validatedBody, {
+//     new: true,
+//   });
+//   //_________________________
+//   const currentData = new Date();
+//   const todayStart = new Date(new Date().setHours(0, 0, 0, 0));
+//   //-------------------------
 
-  const todayWeight = await WeightIntakeModel.aggregate([
-    {
-      $match: {
-        consumer: req.user._id,
-        createdAt: { $gte: todayStart, $lt: currentData },
-      },
-    },
-  ]);
+//   const todayWeight = await WeightIntakeModel.aggregate([
+//     {
+//       $match: {
+//         consumer: req.user._id,
+//         createdAt: { $gte: todayStart, $lt: currentData },
+//       },
+//     },
+//   ]);
 
-  if (todayWeight.length === 0) {
-    await WeightIntakeModel.create({
-      weight: updatedBMRUser.weight,
-      consumer: req.user._id,
-    });
-  } else {
-    await WeightIntakeModel.findOneAndUpdate(
-      todayWeight[0]._id,
-      { weight: updatedBMRUser.weight },
-      { new: true }
-    );
-  }
+//   if (todayWeight.length === 0) {
+//     await WeightIntakeModel.create({
+//       weight: updatedBMRUser.weight,
+//       consumer: req.user._id,
+//     });
+//   } else {
+//     await WeightIntakeModel.findOneAndUpdate(
+//       todayWeight[0]._id,
+//       { weight: updatedBMRUser.weight },
+//       { new: true }
+//     );
+//   }
 
-  extractUpdatedFields(validatedBody, updatedBMRUser);
-  res.json({
-    weight: updatedBMRUser.weight,
-  });
-};
+//   extractUpdatedFields(validatedBody, updatedBMRUser);
+//   res.json({
+//     weight: updatedBMRUser.weight,
+//   });
+// };
 
 module.exports = {
   statistics: handlerWrapper(statistics),
   updateUser: handlerWrapper(updateUser),
-  updateUserGoal: handlerWrapper(updateUserGoal),
-  updateUserWeight: handlerWrapper(updateUserWeight),
+  // updateUserGoal: handlerWrapper(updateUserGoal),
+  // updateUserWeight: handlerWrapper(updateUserWeight),
 };
