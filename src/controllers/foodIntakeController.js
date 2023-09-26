@@ -51,13 +51,13 @@ const getDiaryFood = async (req, res) => {
 };
 
 const putDiaryFood = async (req, res) => {
-  const validatedBody = SaveFoodIntakeValidationSchema.parse(req.body);
   const { id } = req.params;
-  console.log(id);
-  console.log(validatedBody);
-  await FoodIntakeModel.findByIdAndUpdate(id, validatedBody, { new: true });
 
-  res.json(validatedBody);
+  const validatedBody = SaveFoodIntakeValidationSchema.parse(req.body);
+
+  const updated = await FoodIntakeModel.findByIdAndUpdate(id, validatedBody, { new: true });
+
+  res.json(updated);
 };
 
 const getRecommendedFood = async (req, res) => {
