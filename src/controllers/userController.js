@@ -10,7 +10,6 @@ const WaterIntakeModel = require('../models/WaterIntake/WaterIntakeModel');
 const WeightIntakeModel = require('../models/WeightIntake/WeightIntakeModel');
 const calculateBMR = require('../utils/calculateBMR');
 const extractUpdatedFields = require('../utils/extractUpdatedFields');
-const parseStringPropsToNums = require('../utils/parseStringPropsToNums');
 
 const statistics = async (req, res) => {
   // TODO calculate calories, water based on foodIntake
@@ -42,13 +41,13 @@ const statistics = async (req, res) => {
           createdAt: { $gte: startDate, $lt: endDate },
         },
       },
-      { $sort: { createdAt: 1 } },
       {
         $group: {
           _id: {
             day: { $dayOfMonth: '$createdAt' },
           },
           total: { $sum: '$volume' },
+          // count: { $count: 1 },
         },
       },
     ]);
@@ -80,7 +79,7 @@ const statistics = async (req, res) => {
   } else if (range === 'month') {
     startDate = beforeMonth;
     // get to Month
-    const amountWater = await WaterIntakeModel.aggregate([
+    const water = await WaterIntakeModel.aggregate([
       {
         $match: {
           consumer: req.user._id,
@@ -100,7 +99,7 @@ const statistics = async (req, res) => {
       },
       { $sort: { _id: 1 } },
     ]);
-    const amountCalories = await FoodIntakeModel.aggregate([
+    const calories = await FoodIntakeModel.aggregate([
       {
         $match: {
           consumer: req.user._id,
@@ -119,7 +118,7 @@ const statistics = async (req, res) => {
       },
       { $sort: { _id: 1 } },
     ]);
-    const amountWeight = await WeightIntakeModel.aggregate([
+    const weight = await WeightIntakeModel.aggregate([
       {
         $match: {
           consumer: req.user._id,
@@ -140,16 +139,14 @@ const statistics = async (req, res) => {
     ]);
 
     res.json({
-      monthlyStatistics: {
-        amountWater,
-        amountCalories,
-        amountWeight,
-      },
+      water,
+      calories,
+      weight,
     });
   } else if (range === 'year') {
     startDate = beforeYear;
     // get to Year
-    const amountWater = await WaterIntakeModel.aggregate([
+    const water = await WaterIntakeModel.aggregate([
       {
         $match: {
           consumer: req.user._id,
@@ -180,7 +177,7 @@ const statistics = async (req, res) => {
 
       { $sort: { _id: 1 } },
     ]);
-    const amountCalories = await FoodIntakeModel.aggregate([
+    const calories = await FoodIntakeModel.aggregate([
       {
         $match: {
           consumer: req.user._id,
@@ -210,7 +207,7 @@ const statistics = async (req, res) => {
 
       { $sort: { _id: 1 } },
     ]);
-    const amountWeight = await WeightIntakeModel.aggregate([
+    const weight = await WeightIntakeModel.aggregate([
       {
         $match: {
           consumer: req.user._id,
@@ -241,23 +238,15 @@ const statistics = async (req, res) => {
       { $sort: { _id: 1 } },
     ]);
     res.json({
-      yearStatistics: {
-        amountWater,
-        amountCalories,
-        amountWeight,
-      },
+      water,
+      calories,
+      weight,
     });
   }
 };
 
 const updateUser = async (req, res) => {
-  // parseStringPropsToNums чтоб спарсить числа из стринговых значений (FormData)
-  const parsedBody = parseStringPropsToNums(req.body);
-  if (req.file && req.file.path) Object.assign(parsedBody, { avatarURL: req.file.path });
-
-  console.log(parsedBody);
-
-  const validatedBody = UpdateUserValidationSchema.parse(parsedBody);
+  const validatedBody = UpdateUserValidationSchema.parse(req.body);
 
   const updatedUser = await UserModel.findByIdAndUpdate(req.user._id, validatedBody, { new: true });
 
