@@ -3,7 +3,7 @@ const { z } = require('zod');
 const SaveFoodIntakeValidationSchema = z
   .object({
     mealName: z.string().nonempty(),
-    mealType: z.enum(['Breakfast', 'Lunch', 'Dinner', 'Snack']),
+    mealType: z.enum(['Breakfast', 'Lunch', 'Dinner', 'Snack']).optional(),
     carbonohidrates: z.number().min(0),
     protein: z.number().min(0),
     fat: z.number().min(0),
