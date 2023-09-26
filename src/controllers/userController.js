@@ -259,6 +259,32 @@ const updateUser = async (req, res) => {
   const updatedBMRUser = await UserModel.findByIdAndUpdate(req.user._id, validatedBody, {
     new: true,
   });
+  //------- проверка  текущей записи в коллекции Weight create/update
+  const todayWeight = await WeightIntakeModel.aggregate([
+    {
+      $match: {
+        consumer: req.user._id,
+        createdAt: {
+          $gte: new Date(new Date().setHours(0, 0, 0, 0)),
+          $lt: new Date(),
+        },
+      },
+    },
+  ]);
+
+  if (todayWeight.length === 0) {
+    await WeightIntakeModel.create({
+      weight: updatedBMRUser.weight,
+      consumer: req.user._id,
+    });
+  } else {
+    await WeightIntakeModel.findOneAndUpdate(
+      todayWeight[0]._id,
+      { weight: updatedBMRUser.weight },
+      { new: true }
+    );
+  }
+
   const updatedFields = extractUpdatedFields(validatedBody, updatedBMRUser);
 
   res.json(updatedFields);
