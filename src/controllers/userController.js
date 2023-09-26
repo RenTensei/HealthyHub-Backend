@@ -299,7 +299,7 @@ const updateUserWeight = async (req, res) => {
   const updatedBMRUser = await UserModel.findByIdAndUpdate(req.user._id, validatedBody, {
     new: true,
   });
-  //_________________________
+  // _________________________
   const currentData = new Date();
   const todayStart = new Date(new Date().setHours(0, 0, 0, 0));
   //-------------------------
