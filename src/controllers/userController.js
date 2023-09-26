@@ -261,69 +261,69 @@ const updateUser = async (req, res) => {
   res.json(updatedFields);
 };
 
-const updateUserGoal = async (req, res) => {
-  const validatedBody = UpdateGoalValidationSchema.parse(req.body);
+// const updateUserGoal = async (req, res) => {
+//   const validatedBody = UpdateGoalValidationSchema.parse(req.body);
 
-  const updatedUser = await UserModel.findByIdAndUpdate(req.user._id, validatedBody, { new: true });
+//   const updatedUser = await UserModel.findByIdAndUpdate(req.user._id, validatedBody, { new: true });
 
-  const { gender, height, weight, age, physicalActivityRatio } = updatedUser;
-  validatedBody.BMR = calculateBMR({ gender, height, weight, age, physicalActivityRatio });
+//   const { gender, height, weight, age, physicalActivityRatio } = updatedUser;
+//   validatedBody.BMR = calculateBMR({ gender, height, weight, age, physicalActivityRatio });
 
-  const updatedBMRUser = await UserModel.findByIdAndUpdate(req.user._id, validatedBody, {
-    new: true,
-  });
+//   const updatedBMRUser = await UserModel.findByIdAndUpdate(req.user._id, validatedBody, {
+//     new: true,
+//   });
 
-  extractUpdatedFields(validatedBody, updatedBMRUser);
-  res.json({ goal: updatedUser.goal });
-};
+//   extractUpdatedFields(validatedBody, updatedBMRUser);
+//   res.json({ goal: updatedUser.goal });
+// };
 
-const updateUserWeight = async (req, res) => {
-  const validatedBody = UpdateWeightValidationSchema.parse(req.body);
+// const updateUserWeight = async (req, res) => {
+//   const validatedBody = UpdateWeightValidationSchema.parse(req.body);
 
-  const updatedUser = await UserModel.findByIdAndUpdate(req.user._id, validatedBody, { new: true });
+//   const updatedUser = await UserModel.findByIdAndUpdate(req.user._id, validatedBody, { new: true });
 
-  const { gender, height, weight, age, physicalActivityRatio } = updatedUser;
-  validatedBody.BMR = calculateBMR({ gender, height, weight, age, physicalActivityRatio });
+//   const { gender, height, weight, age, physicalActivityRatio } = updatedUser;
+//   validatedBody.BMR = calculateBMR({ gender, height, weight, age, physicalActivityRatio });
 
-  const updatedBMRUser = await UserModel.findByIdAndUpdate(req.user._id, validatedBody, {
-    new: true,
-  });
-  //_________________________
-  const currentData = new Date();
-  const todayStart = new Date(new Date().setHours(0, 0, 0, 0));
-  //-------------------------
+//   const updatedBMRUser = await UserModel.findByIdAndUpdate(req.user._id, validatedBody, {
+//     new: true,
+//   });
+//   //_________________________
+//   const currentData = new Date();
+//   const todayStart = new Date(new Date().setHours(0, 0, 0, 0));
+//   //-------------------------
 
-  const todayWeight = await WeightIntakeModel.aggregate([
-    {
-      $match: {
-        consumer: req.user._id,
-        createdAt: { $gte: todayStart, $lt: currentData },
-      },
-    },
-  ]);
+//   const todayWeight = await WeightIntakeModel.aggregate([
+//     {
+//       $match: {
+//         consumer: req.user._id,
+//         createdAt: { $gte: todayStart, $lt: currentData },
+//       },
+//     },
+//   ]);
 
-  if (todayWeight.length === 0) {
-    await WeightIntakeModel.create({
-      weight: updatedBMRUser.weight,
-      consumer: req.user._id,
-    });
-  } else {
-    await WeightIntakeModel.findOneAndUpdate(
-      todayWeight[0]._id,
-      { weight: updatedBMRUser.weight },
-      { new: true }
-    );
-  }
+//   if (todayWeight.length === 0) {
+//     await WeightIntakeModel.create({
+//       weight: updatedBMRUser.weight,
+//       consumer: req.user._id,
+//     });
+//   } else {
+//     await WeightIntakeModel.findOneAndUpdate(
+//       todayWeight[0]._id,
+//       { weight: updatedBMRUser.weight },
+//       { new: true }
+//     );
+//   }
 
-  extractUpdatedFields(validatedBody, updatedBMRUser);
-  res.json({
-    weight: updatedBMRUser.weight,
-  });
-};
+//   extractUpdatedFields(validatedBody, updatedBMRUser);
+//   res.json({
+//     weight: updatedBMRUser.weight,
+//   });
+// };
 
 module.exports = {
   statistics: handlerWrapper(statistics),
   updateUser: handlerWrapper(updateUser),
-  updateUserGoal: handlerWrapper(updateUserGoal),
-  updateUserWeight: handlerWrapper(updateUserWeight),
+  // updateUserGoal: handlerWrapper(updateUserGoal),
+  // updateUserWeight: handlerWrapper(updateUserWeight),
 };
