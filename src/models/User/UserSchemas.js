@@ -1,6 +1,11 @@
 const { z } = require('zod');
 
 // TODO improve password validation
+const emailValidationSchema = z.object({
+  email: z.string().email(),
+  password: z.string().min(6).max(16).optional(),
+});
+
 const SignUpValidationSchema = z.object({
   name: z.string().min(3),
   email: z.string().email(),
@@ -51,6 +56,7 @@ const WatertValidationSchema = z
   .strict();
 
 module.exports = {
+  emailValidationSchema,
   SignUpValidationSchema,
   SignInValidationSchema,
   UpdateUserValidationSchema,
