@@ -16,7 +16,7 @@ router.get('/current', authMiddleware, authController.current);
 
 router.put('/password', authMiddleware, authController.password);
 
-router.post('/logout', authMiddleware, authController.logout);
+router.get('/logout', authMiddleware, authController.logout);
 
 // router.post('/avatar', authMiddleware, uploadCloud.single('image'), hhhhh);
 // router.patch('/avatar', authMiddleware, upload.single('avatar'), authController.avatar);
